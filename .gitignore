@@ -1,0 +1,6 @@
+/node_modules
+*debug.log
+/build
+/types
+/examples/assets/housePlayground.glb
+/examples/assets/housePlayground.gltf
