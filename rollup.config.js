@@ -4,7 +4,7 @@
  * @Author: yangsen
  * @Date: 2022-07-28 16:53:28
  * @LastEditors: yangsen
- * @LastEditTime: 2022-08-11 10:34:51
+ * @LastEditTime: 2022-08-16 10:41:57
  */
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
@@ -82,7 +82,7 @@ let builds = [
       serve({
         open: true,
         contentBase: '', // 基础路径，应该是指的index.html所在路径
-        port: 8888, // 不设置就可以自动分配路径
+        // port: 8888, // 不设置就可以自动分配路径
       }),
       livereload(),
     ],
@@ -102,7 +102,8 @@ let builds = [
 
 switch (process.env.NODE_ENV) {
   case 'develop':
-    builds = [builds[1], builds[2], builds[3]];
+    builds = [builds[1]];
+    // builds = [builds[1],builds[2],builds[3]];
     break;
   case 'build':
     builds = builds[0];
