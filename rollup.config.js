@@ -4,7 +4,7 @@
  * @Author: yangsen
  * @Date: 2022-07-28 16:53:28
  * @LastEditors: yangsen
- * @LastEditTime: 2022-08-16 10:41:57
+ * @LastEditTime: 2022-08-19 10:43:55
  */
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
@@ -69,7 +69,7 @@ let builds = [
         exclude: 'node_modules/**',
         extensions, // 参数extensions表示要处理的文件类型，使用ts语法时，当用typescript编译时这个参数可以省略，但使用babel编译ts时必须加上这个参数
         babelHelpers: 'bundled',
-        include: ['src/**/*'],
+        include: ['src/**/*','utils/**/*'],
       }),
       alias({
         entries: [

@@ -1,41 +1,85 @@
 import * as WEBGIS from '../build/bundle.module.js';
+import { pointFun, pointPickupFun, seriesPointsFun, selectPointFun } from './point.js';
+import { gui, dynamicFlag } from './lil-gui.js';
 
-let Model, scene, camera, renderer, clock, pointer, raycaster, intersection;
+export let Model, scene, camera, renderer, clock, pointer, raycaster, intersection, screenPosition;
 let toggle = 0;
-let seriesPoints = [];
 let threshold = 0.1;
 let pointIndex = 0;
+const seriesPoints = seriesPointsFun();
 
-// 生成单个点函数
-const points = () => {
-  // 添加点
-  const point = new WEBGIS.PointSymbol();
-  // 点--设置颜色
-  point.setColor('#228be6');
-  // 点--设置大小
-  point.setSize(10);
-  // 点--获取点大小
-  point.setSize(point.getSize() * 10);
-  // 点--缩放
-  point.setScale(0.1);
-  point.setScale(0.1);
-  // 点--设置位置
-  point.position.set(5, 5, 0);
-  console.log(point);
+/* // 单独获取点击坐标
+const getPosition = (event) => {
+  const pointer = new WEBGIS.Vector2()
+  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  
+ 
+  raycaster.setFromCamera(pointer, camera);
 
-  const point1 = new WEBGIS.PointSymbol();
-  point1.position.set(0, 5, 0);
-  point1.scale.set(10, 10, 10);
+  const intersections = raycaster.intersectObject(Model.children[2], true);
 
-  return [point, point1];
+  intersection = intersections.length > 0 ? intersections[0] : null;
+
+  screenPosition=intersection.point
+} */
+
+// 生成线函数
+const lineCreateFun = () => {
+  const line = new WEBGIS.LineSymbol();
+  // 线--设置路径点
+  line.setPoints([-10, 0, -1, 0, 10, -1, 15, 0, -1]);
+  // 线--设置颜色
+  line.setColor('#000000');
+  // 线--设置宽度
+  line.setWidth(1);
+  // 线--设置类型
+  // line.setType('dotted');
+  return line;
 };
 
-// 生成连续点函数
-const seriesPointsFun = () => {
-  for (let i = 0; i < 40; i++) {
-    const point = new WEBGIS.PointSymbol();
-    seriesPoints.push(point);
+// 生成纹理文字
+const textureText = () => {
+  const text = new WEBGIS.TextureTextSymbol();
+
+  const position = text.position;
+  const canvas = text.material.map.image;
+  /* if (canvas) {
+    var poiRect = { w: canvas.width, h: canvas.height };
+    var scale = getPoiScale(position, poiRect);
+    text.scale.set(scale[0], scale[1], 1.0);
   }
+
+  function getPoiScale(position, poiRect) {
+    if (!position) return;
+    const distance = camera.position.distanceTo(position);
+    const top = Math.tan(((camera.fov / 2) * Math.PI) / 180) * distance; //camera.fov 相机的拍摄角度
+    const meterPerPixel = (2 * top) / window.clientHeight;
+    const scaleX = poiRect.w * meterPerPixel;
+    const scaleY = poiRect.h * meterPerPixel;
+    return [scaleX, scaleY, 1.0];
+  } */
+  /*   text.position.set(screenPosition === undefined ? 0 : screenPosition.x, screenPosition === undefined ? 0 : screenPosition.y + 10, screenPosition === undefined ? 0 : screenPosition.z)   */
+
+  text.position.set(
+    screenPosition === undefined ? -50.37117069393079 : screenPosition.x,
+    screenPosition === undefined ? 16.637877953670675 : screenPosition.y + 10,
+    screenPosition === undefined ? -8.934955214346912 : screenPosition.z,
+  );
+  text.scale.set(10, 10, 1);
+  scene.add(text);
+  return text;
+};
+
+// 生成立方体
+const createBox = () => {
+  const cube = new WEBGIS.BoxSymbol();
+  cube.position.set(0, 1, 0);
+  // cube.setColor('#000000')
+  // cube.scale.set(10,10,10)
+  // scene.add(cube)
+  // renderer.render(scene,camera)
+  return cube;
 };
 
 // mousemove事件
@@ -82,15 +126,26 @@ const init = () => {
   const axes = new WEBGIS.AxesHelper(10);
   scene.add(axes);
   // 添加单个点
-  scene.add(...points());
+  // scene.add(pointFun());
   // 生成连续点
-  seriesPointsFun();
+  // seriesPointsFun();
   // Raycaster
   raycaster = new WEBGIS.Raycaster();
   raycaster.params.Points.threshold = threshold;
+  // 添加线
+  scene.add(lineCreateFun());
+  // 添加纹理文字
+  scene.add(textureText());
+  // 添加立方体
+  scene.add(createBox());
+  renderer.render(scene, camera);
+
   // 渲染到页面
   document.getElementById('webgl-output').appendChild(renderer.domElement);
   document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('dblclick', pointPickupFun);
+  document.addEventListener('mousedown', selectPointFun);
+  // document.addEventListener('dblclick', textureText);
 };
 
 // render函数
@@ -101,24 +156,28 @@ const render = () => {
 
   intersection = intersections.length > 0 ? intersections[0] : null;
 
-  if (toggle > 0.0001 && intersection !== null) {
-    seriesPoints[pointIndex].position.set(intersection.point.x + 1, intersection.point.y + 1, intersection.point.z + 1);
-    seriesPoints[pointIndex].setSize(5);
-    pointIndex = (pointIndex + 1) % seriesPoints.length;
-    toggle = 0;
-  }
-  console.log(seriesPoints.length);
-  for (let i = 0; i < seriesPoints.length; i++) {
-    const point = seriesPoints[i];
-    if (point.getSize() < 0.1) {
-      point.setSize(0);
-      point.setOpacity(0);
-    } else {
-      point.setOpacity(1);
-      point.setSize(point.getSize() * 0.8);
+  if (dynamicFlag === true) {
+    if (toggle > 0.0001 && intersection !== null) {
+      seriesPoints[pointIndex].position.set(
+        intersection.point.x + 1,
+        intersection.point.y + 1,
+        intersection.point.z + 1,
+      );
+      seriesPoints[pointIndex].setSize(5);
+      pointIndex = (pointIndex + 1) % seriesPoints.length;
+      toggle = 0;
     }
-
-    scene.add(point);
+    for (let i = 0; i < seriesPoints.length; i++) {
+      const point = seriesPoints[i];
+      if (point.getSize() < 0.1) {
+        point.setSize(0);
+        point.setOpacity(0);
+      } else {
+        point.setOpacity(1);
+        point.setSize(point.getSize() * 0.8);
+      }
+      scene.add(point);
+    }
   }
 
   toggle += clock.getDelta();
@@ -136,8 +195,8 @@ const glb = () => {
   const loader = new WEBGIS.GLTFLoader();
   loader.load('./assets/housePlayground.glb', function (glb) {
     Model = glb.scene;
-    console.log(Model);
-    Model.scale.set(2, 2, 2);
+
+    Model.scale.set(1.5, 1.5, 1.5);
 
     /* // 将模型缩放，并将模型的几何中心点移动到原点
     Model.scale.set(0.01, 0.01, 0.01);
@@ -152,15 +211,19 @@ const glb = () => {
     var z1 = box3.min.z + mdwid / 2;
     Model.position.set(-x1, -y1, -z1); */
 
-    const boxHelper = new WEBGIS.BoxHelper(Model);
-    scene.add(boxHelper);
+    /* const boxHelper = new WEBGIS.BoxHelper(Model);
+    scene.add(boxHelper); */
+
     scene.add(Model);
     renderer.render(scene, camera);
-    // animation();
+    animation();
   });
 };
 init();
+
 glb();
+
+createBox();
 
 // 辅助控制器
 const controls = new WEBGIS.OrbitControls(camera, renderer.domElement);

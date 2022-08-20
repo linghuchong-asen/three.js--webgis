@@ -27,7 +27,7 @@
     "strict": true, // strict的值为true或false，用于指定是否启动所有类型检查，如果设为true则会同时开启下面这几个(这里就不列举了，可以查看tsconfig.json配置)严格类型检查，默认为false
   },
    /* 指定编译文件或排除指定编译文件 */
-   "include": ["src/**/*"],
+   "include": ["src/**/*","utils/**/*"],
    "exclude": [],
   //  "references": ["@types/three"],
 }

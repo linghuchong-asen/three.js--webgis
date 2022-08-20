@@ -4,7 +4,7 @@
  * @Author: yangsen
  * @Date: 2022-08-11 14:27:31
  * @LastEditors: yangsen
- * @LastEditTime: 2022-08-17 14:12:32
+ * @LastEditTime: 2022-08-20 14:51:44
  */
 
 import { PointsMaterial } from 'three/src/materials/PointsMaterial.js';
@@ -13,15 +13,15 @@ import { Object3D } from 'three/src/core/Object3D.js';
 import { Float32BufferAttribute } from 'three/src/core/BufferAttribute.js';
 import { CanvasTexture } from 'three/src/textures/CanvasTexture.js';
 
-const canvasTextureCircle = (color?: string) => {
+const canvasTextureCircle = (color: string) => {
   const canvas = document.createElement('canvas');
   // 不设置canvas的宽高的话，在three.js中会形成椭圆
-  canvas.width = 100;
-  canvas.height = 100;
+  canvas.width = 10;
+  canvas.height = 10;
   const ctx = canvas.getContext('2d');
   if (ctx !== null) {
-    ctx.fillStyle = color === undefined ? '#ff0000' : color;
-    ctx.arc(50, 50, 50, 0, 2 * Math.PI);
+    ctx.fillStyle = color;
+    ctx.arc(5, 5, 5, 0, 2 * Math.PI);
     ctx.fill();
   }
   const texture = new CanvasTexture(canvas);
@@ -29,6 +29,14 @@ const canvasTextureCircle = (color?: string) => {
   return texture;
 };
 
+interface params {
+  x?: number;
+  y?: number;
+  z?: number;
+  color?: string;
+  size?: number;
+  opacity?: number;
+}
 class PointSymbol extends Object3D {
   type: string;
   geometry: BufferGeometry;
@@ -36,18 +44,43 @@ class PointSymbol extends Object3D {
   morphTargetInfluences: number[] | undefined;
   morphTargetDictionary: any;
   isPoints: boolean;
+  x?: number;
+  y?: number;
+  z?: number;
+  color?: string;
+  size?: number;
+  opacity?: number;
+
   // scale: Vector3;
 
-  constructor(
-    geometry = new BufferGeometry().setAttribute('position', new Float32BufferAttribute([0, 0, 0], 3)),
-    material = new PointsMaterial({ map: canvasTextureCircle(), transparent: true }),
-  ) {
+  constructor(params: params) {
     super();
     this.type = 'Points';
     this.isPoints = true;
-    this.geometry = geometry;
-    this.material = material;
-    // this.scale = new Vector3(1, 1, 1);
+    if (params === undefined) {
+      this.geometry = new BufferGeometry().setAttribute('position', new Float32BufferAttribute([0, 0, 0], 3));
+      this.material = new PointsMaterial({
+        map: canvasTextureCircle('#ff0000'),
+        transparent: true,
+      });
+    } else {
+      this.x = params.x === undefined ? 0 : params.x;
+      this.y = params.y === undefined ? 0 : params.y;
+      this.z = params.z === undefined ? 0 : params.z;
+      this.color = params.color === undefined ? '#ff0000' : params.color;
+      this.size = params.size === undefined ? 1 : params.size;
+      this.opacity = params.opacity === undefined ? 1 : params.opacity;
+      this.geometry = new BufferGeometry().setAttribute(
+        'position',
+        new Float32BufferAttribute([this.x, this.y, this.z], 3),
+      );
+      this.material = new PointsMaterial({
+        map: canvasTextureCircle(this.color),
+        transparent: true,
+        size: this.size,
+        opacity: this.opacity,
+      });
+    }
 
     this.updateMorphTargets();
   }
