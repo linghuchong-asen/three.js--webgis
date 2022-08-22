@@ -1,6 +1,7 @@
 import * as WEBGIS from '../build/bundle.module.js';
-import { raycaster, camera, scene } from './Demo.js';
+import { camera, scene, Model } from './Demo.js';
 
+export let _deletePointObject;
 // 生成单个点函数
 export const pointFun = (params) => {
   // 添加点
@@ -33,40 +34,51 @@ export const pointPickupFun = (event) => {
   const pointer = new WEBGIS.Vector2();
   pointer.x = x;
   pointer.y = y;
-  raycaster.setFromCamera(pointer, camera);
 
-  const intersections = raycaster.intersectObject(Model.children[2], true);
+  const raycasterPickUp = new WEBGIS.Raycaster();
+  raycasterPickUp.setFromCamera(pointer, camera);
 
-  intersection = intersections.length > 0 ? intersections[0] : null;
+  const intersections = raycasterPickUp.intersectObject(Model.children[2], true);
 
+  const intersection = intersections.length > 0 ? intersections[0] : null;
+
+  let screenPosition;
   if (intersection !== null) {
     screenPosition = intersection.point;
-  }
 
-  const point = new WEBGIS.PointSymbol();
-  point.setSize(2);
-  point.position.set(intersection.point.x, intersection.point.y + 1, intersection.point.z);
-  return point;
+    const point = new WEBGIS.PointSymbol();
+    point.setSize(2);
+    point.position.set(screenPosition.x, screenPosition.y + 1, screenPosition.z);
+    scene.add(point);
+  }
 };
 
 // 选中点功能
 export const selectPointFun = (event) => {
   const pointer = new WEBGIS.Vector2();
-  pointer.x = event.x;
-  pointer.y = event.y;
-  raycaster.setFromCamera(pointer, camera);
+  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  const raycaster1 = new WEBGIS.Raycaster();
+  raycaster1.setFromCamera(pointer, camera);
 
   const pointsObject = scene.children.filter((item) => item.isPoints === true);
-  console.log(pointsObject);
-  if (pointsObject.length === 1) {
-    const intersection = raycaster.intersectObject(pointsObject[0], true);
-    console.log(intersection);
-  } else if (pointsObject.length > 1) {
-    const intersections = raycaster.intersectObjects(pointsObject, true);
-    console.log(intersections);
+
+  const intersects = raycaster1.intersectObjects(pointsObject, true);
+
+  if (intersects.length > 0) {
+    _deletePointObject = intersects[0].object;
+
+    intersects[0].object.setSize(intersects[0].object.getSize() * 1.5);
+    setTimeout(() => {
+      intersects[0].object.setSize((intersects[0].object.getSize() * 2) / 3);
+    }, 500);
   }
+};
 
-  // const intersection = intersections.length > 0 ? intersections[0] : null;
-
-  // console.log(intersection);
+// 删除点功能
+export const deletePointFun = (deletePointObject) => {
+  deletePointObject.geometry.dispose();
+  deletePointObject.material.dispose();
+  scene.remove(deletePointObject);
 };

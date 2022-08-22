@@ -4,7 +4,7 @@
  * @Author: yangsen
  * @Date: 2022-08-11 14:27:31
  * @LastEditors: yangsen
- * @LastEditTime: 2022-08-20 14:51:44
+ * @LastEditTime: 2022-08-22 08:40:23
  */
 
 import { PointsMaterial } from 'three/src/materials/PointsMaterial.js';
@@ -12,6 +12,10 @@ import { BufferGeometry } from 'three/src/core/BufferGeometry.js';
 import { Object3D } from 'three/src/core/Object3D.js';
 import { Float32BufferAttribute } from 'three/src/core/BufferAttribute.js';
 import { CanvasTexture } from 'three/src/textures/CanvasTexture.js';
+import { Sphere } from 'three/src/math/Sphere.js';
+import { Matrix4 } from 'three/src/math/Matrix4.js';
+import { Ray } from 'three/src/math/Ray.js';
+import { Vector3 } from 'three/src/math/Vector3.js';
 
 const canvasTextureCircle = (color: string) => {
   const canvas = document.createElement('canvas');
@@ -28,6 +32,10 @@ const canvasTextureCircle = (color: string) => {
   texture.needsUpdate = true;
   return texture;
 };
+const _sphere = /*@__PURE__*/ new Sphere();
+const _inverseMatrix = /*@__PURE__*/ new Matrix4();
+const _ray = /*@__PURE__*/ new Ray();
+const _position = /*@__PURE__*/ new Vector3();
 
 interface params {
   x?: number;
@@ -140,6 +148,88 @@ class PointSymbol extends Object3D {
    */
   setOpacity(opacity: number) {
     this.material.opacity = opacity;
+  }
+
+  raycast(raycaster: any, intersects: any[]) {
+    const geometry = this.geometry;
+    const matrixWorld = this.matrixWorld;
+    const threshold = raycaster.params.Points.threshold;
+    const drawRange = geometry.drawRange;
+
+    // Checking boundingSphere distance to ray
+
+    if (geometry.boundingSphere === null) geometry.computeBoundingSphere();
+
+    if (geometry.boundingSphere) _sphere.copy(geometry.boundingSphere);
+    _sphere.applyMatrix4(matrixWorld);
+    _sphere.radius += threshold;
+
+    if (raycaster.ray.intersectsSphere(_sphere) === false) return;
+
+    //
+
+    _inverseMatrix.copy(matrixWorld).invert();
+    _ray.copy(raycaster.ray).applyMatrix4(_inverseMatrix);
+
+    const localThreshold = threshold / ((this.scale.x + this.scale.y + this.scale.z) / 3);
+    const localThresholdSq = localThreshold * localThreshold;
+
+    const index = geometry.index;
+    const attributes = geometry.attributes;
+    const positionAttribute = attributes.position;
+
+    if (index !== null) {
+      const start = Math.max(0, drawRange.start);
+      const end = Math.min(index.count, drawRange.start + drawRange.count);
+
+      for (let i = start, il = end; i < il; i++) {
+        const a = index.getX(i);
+
+        _position.fromBufferAttribute(positionAttribute, a);
+
+        testPoint(_position, a, localThresholdSq, matrixWorld, raycaster, intersects, this);
+      }
+    } else {
+      const start = Math.max(0, drawRange.start);
+      const end = Math.min(positionAttribute.count, drawRange.start + drawRange.count);
+
+      for (let i = start, l = end; i < l; i++) {
+        _position.fromBufferAttribute(positionAttribute, i);
+
+        testPoint(_position, i, localThresholdSq, matrixWorld, raycaster, intersects, this);
+      }
+    }
+  }
+}
+function testPoint(
+  point: any,
+  index: any,
+  localThresholdSq: any,
+  matrixWorld: any,
+  raycaster: any,
+  intersects: any,
+  object: any,
+) {
+  const rayPointDistanceSq = _ray.distanceSqToPoint(point);
+
+  if (rayPointDistanceSq < localThresholdSq) {
+    const intersectPoint = new Vector3();
+
+    _ray.closestPointToPoint(point, intersectPoint);
+    intersectPoint.applyMatrix4(matrixWorld);
+
+    const distance = raycaster.ray.origin.distanceTo(intersectPoint);
+
+    if (distance < raycaster.near || distance > raycaster.far) return;
+
+    intersects.push({
+      distance: distance,
+      distanceToRay: Math.sqrt(rayPointDistanceSq),
+      point: intersectPoint,
+      index: index,
+      face: null,
+      object: object,
+    });
   }
 }
 

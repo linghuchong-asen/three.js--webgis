@@ -1,85 +1,43 @@
 import * as WEBGIS from '../build/bundle.module.js';
 import { pointFun, pointPickupFun, seriesPointsFun, selectPointFun } from './point.js';
-import { gui, dynamicFlag } from './lil-gui.js';
+import { gui, dynamicFlag, _getPositionVisible } from './lil-gui.js';
 
-export let Model, scene, camera, renderer, clock, pointer, raycaster, intersection, screenPosition;
+export let Model,
+  scene,
+  camera,
+  renderer,
+  clock,
+  pointer,
+  raycaster,
+  intersection,
+  screenPosition,
+  container,
+  _getPointPosition;
 let toggle = 0;
 let threshold = 0.1;
 let pointIndex = 0;
+
 const seriesPoints = seriesPointsFun();
 
-/* // 单独获取点击坐标
+// 单独获取点击坐标
 const getPosition = (event) => {
-  const pointer = new WEBGIS.Vector2()
+  const pointer = new WEBGIS.Vector2();
   pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
   pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  
- 
+
   raycaster.setFromCamera(pointer, camera);
 
   const intersections = raycaster.intersectObject(Model.children[2], true);
 
-  intersection = intersections.length > 0 ? intersections[0] : null;
+  const intersection = intersections.length > 0 ? intersections[0] : null;
+  if (intersection) _getPointPosition = intersection.point;
 
-  screenPosition=intersection.point
-} */
-
-// 生成线函数
-const lineCreateFun = () => {
-  const line = new WEBGIS.LineSymbol();
-  // 线--设置路径点
-  line.setPoints([-10, 0, -1, 0, 10, -1, 15, 0, -1]);
-  // 线--设置颜色
-  line.setColor('#000000');
-  // 线--设置宽度
-  line.setWidth(1);
-  // 线--设置类型
-  // line.setType('dotted');
-  return line;
-};
-
-// 生成纹理文字
-const textureText = () => {
-  const text = new WEBGIS.TextureTextSymbol();
-
-  const position = text.position;
-  const canvas = text.material.map.image;
-  /* if (canvas) {
-    var poiRect = { w: canvas.width, h: canvas.height };
-    var scale = getPoiScale(position, poiRect);
-    text.scale.set(scale[0], scale[1], 1.0);
+  if (_getPositionVisible) {
+    const point = new WEBGIS.PointSymbol();
+    point.position.set(_getPointPosition.x, _getPointPosition.y + 1, _getPointPosition.z);
+    scene.add(point);
+    renderer.render(scene, camera);
   }
-
-  function getPoiScale(position, poiRect) {
-    if (!position) return;
-    const distance = camera.position.distanceTo(position);
-    const top = Math.tan(((camera.fov / 2) * Math.PI) / 180) * distance; //camera.fov 相机的拍摄角度
-    const meterPerPixel = (2 * top) / window.clientHeight;
-    const scaleX = poiRect.w * meterPerPixel;
-    const scaleY = poiRect.h * meterPerPixel;
-    return [scaleX, scaleY, 1.0];
-  } */
-  /*   text.position.set(screenPosition === undefined ? 0 : screenPosition.x, screenPosition === undefined ? 0 : screenPosition.y + 10, screenPosition === undefined ? 0 : screenPosition.z)   */
-
-  text.position.set(
-    screenPosition === undefined ? -50.37117069393079 : screenPosition.x,
-    screenPosition === undefined ? 16.637877953670675 : screenPosition.y + 10,
-    screenPosition === undefined ? -8.934955214346912 : screenPosition.z,
-  );
-  text.scale.set(10, 10, 1);
-  scene.add(text);
-  return text;
-};
-
-// 生成立方体
-const createBox = () => {
-  const cube = new WEBGIS.BoxSymbol();
-  cube.position.set(0, 1, 0);
-  // cube.setColor('#000000')
-  // cube.scale.set(10,10,10)
-  // scene.add(cube)
-  // renderer.render(scene,camera)
-  return cube;
 };
 
 // mousemove事件
@@ -125,45 +83,40 @@ const init = () => {
   // AxesHelper辅助对象
   const axes = new WEBGIS.AxesHelper(10);
   scene.add(axes);
-  // 添加单个点
-  // scene.add(pointFun());
-  // 生成连续点
-  // seriesPointsFun();
+
   // Raycaster
   raycaster = new WEBGIS.Raycaster();
   raycaster.params.Points.threshold = threshold;
-  // 添加线
-  scene.add(lineCreateFun());
-  // 添加纹理文字
-  scene.add(textureText());
-  // 添加立方体
-  scene.add(createBox());
+
+  /* // 添加纹理文字
+  scene.add(textureText()); */
+
   renderer.render(scene, camera);
 
+  container = document.getElementById('webgl-output');
   // 渲染到页面
-  document.getElementById('webgl-output').appendChild(renderer.domElement);
+  container.appendChild(renderer.domElement);
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('dblclick', pointPickupFun);
-  document.addEventListener('mousedown', selectPointFun);
-  // document.addEventListener('dblclick', textureText);
+  container.addEventListener('mousedown', selectPointFun);
+  container.addEventListener('mouseup', getPosition);
 };
 
 // render函数
 const render = () => {
-  raycaster.setFromCamera(pointer, camera);
-
-  const intersections = raycaster.intersectObject(Model.children[2], true);
-
-  intersection = intersections.length > 0 ? intersections[0] : null;
-
   if (dynamicFlag === true) {
-    if (toggle > 0.0001 && intersection !== null) {
+    raycaster.setFromCamera(pointer, camera);
+
+    const intersections = raycaster.intersectObject(Model.children[2], true);
+
+    intersection = intersections.length > 0 ? intersections[0] : null;
+    if (toggle > 0.02 && intersection !== null) {
       seriesPoints[pointIndex].position.set(
         intersection.point.x + 1,
         intersection.point.y + 1,
         intersection.point.z + 1,
       );
-      seriesPoints[pointIndex].setSize(5);
+      seriesPoints[pointIndex].setSize(4);
       pointIndex = (pointIndex + 1) % seriesPoints.length;
       toggle = 0;
     }
@@ -174,7 +127,7 @@ const render = () => {
         point.setOpacity(0);
       } else {
         point.setOpacity(1);
-        point.setSize(point.getSize() * 0.8);
+        point.setSize(point.getSize() * 0.9);
       }
       scene.add(point);
     }
@@ -198,8 +151,8 @@ const glb = () => {
 
     Model.scale.set(1.5, 1.5, 1.5);
 
-    /* // 将模型缩放，并将模型的几何中心点移动到原点
-    Model.scale.set(0.01, 0.01, 0.01);
+    // 将模型缩放，并将模型的几何中心点移动到原点
+    /* Model.scale.set(0.01, 0.01, 0.01);
     Model.rotateX(Math.PI / 2);
     const box3 = new WEBGIS.Box3().setFromObject(Model);
     var mdlen = box3.max.x - box3.min.x;
@@ -222,9 +175,6 @@ const glb = () => {
 init();
 
 glb();
-
-createBox();
-
 // 辅助控制器
 const controls = new WEBGIS.OrbitControls(camera, renderer.domElement);
 controls.addEventListener('change', () => {

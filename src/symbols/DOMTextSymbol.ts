@@ -4,23 +4,50 @@
  * @Author: yangsen
  * @Date: 2022-08-18 10:30:34
  * @LastEditors: yangsen
- * @LastEditTime: 2022-08-19 10:25:05
+ * @LastEditTime: 2022-08-22 14:03:00
  */
+
+interface Prams {
+  left?: number;
+  top?: number;
+  text?: string;
+  fontFamily?: string;
+  fontSize?: string;
+  fontColor?: string;
+  fontOpacity?: string;
+  backgroundColor?: string;
+}
 class DOMTextSymbol {
   dom: HTMLDivElement;
-  constructor(text: string) {
+  left?: string;
+  top?: string;
+  text?: string;
+  fontFamily?: string;
+  fontSize?: string;
+  fontColor?: string;
+  fontOpacity?: string;
+  backgroundColor?: string;
+  constructor(params: Prams) {
+    this.left = params.left === undefined ? '0px' : params.left.toString() + 'px';
+    this.top = params.top === undefined ? '0px' : params.top.toString() + 'px';
+    this.text = params.text === undefined ? '聚米画沙' : params.text;
+    this.fontFamily = params.fontFamily === undefined ? 'arial' : params.fontFamily;
+    this.fontSize = params.fontSize === undefined ? '16px' : params.fontSize;
+    this.fontColor = params.fontColor === undefined ? '#fff' : params.fontColor;
+    this.fontOpacity = params.fontOpacity === undefined ? '1' : params.fontOpacity;
+    this.backgroundColor = params.backgroundColor === undefined ? '#2980b9' : params.backgroundColor;
+
     this.dom = document.createElement('div');
-    this.dom.innerHTML = text;
-    this.dom.style.fontSize = '10px';
-    this.dom.style.fontFamily = '微软雅黑';
-    this.dom.style.color = '#2980b9';
-    this.dom.style.opacity = '1';
-    this.dom.style.backgroundColor = '#80b929';
-    this.dom.style.width = '10px';
-    this.dom.style.height = '10px';
+    this.dom.innerHTML = this.text;
+    this.dom.style.fontSize = this.fontSize;
+    this.dom.style.fontFamily = this.fontFamily;
+    this.dom.style.color = this.fontColor;
+    this.dom.style.opacity = this.fontOpacity;
+    this.dom.style.backgroundColor = this.backgroundColor;
+    this.dom.style.padding = '16px';
     this.dom.style.position = 'absolute';
-    this.dom.style.left = '500px';
-    this.dom.style.top = '10px';
+    this.dom.style.left = this.left;
+    this.dom.style.top = this.top;
   }
   // 设置字体 大小 颜色 透明度 背景色 元素大小 背景图片 位置
   setFontSize(size: string) {

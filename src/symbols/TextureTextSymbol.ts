@@ -5,7 +5,7 @@ import { Vector2 } from 'three/src/math/Vector2.js';
  * @Author: yangsen
  * @Date: 2022-08-11 14:27:31
  * @LastEditors: yangsen
- * @LastEditTime: 2022-08-19 11:38:09
+ * @LastEditTime: 2022-08-22 13:27:40
  */
 import { SpriteMaterial } from 'three/src/materials/SpriteMaterial.js';
 
@@ -14,39 +14,8 @@ import { Object3D } from 'three/src/core/Object3D.js';
 import { CanvasTexture } from 'three/src/textures/CanvasTexture.js';
 import { InterleavedBuffer, InterleavedBufferAttribute } from 'three';
 
-interface CanvasParam {
-  color?: string;
-  fontWeight?: number | string;
-  fontSize?: string;
-  fontFamily?: string;
-  globalAlpha?: number;
-}
 let _fontSize: string;
 let _globalAlpha: number;
-const canvasText = (params: CanvasParam): CanvasTexture => {
-  const canvas = document.createElement('canvas');
-  // 不设置canvas的宽高的话，在three.js中会形成椭圆
-  canvas.width = 100;
-  canvas.height = 100;
-  const ctx = canvas.getContext('2d');
-  if (ctx !== null) {
-    const color = params.color === undefined ? '#2980b9' : params.color;
-    const fontWeight = params.fontWeight === undefined ? 500 : params.fontWeight;
-    const fontSize = params.fontSize === undefined ? '10px' : params.fontSize;
-    const fontFamily = params.fontFamily === undefined ? '微软雅黑' : params.fontFamily;
-    const globalAlpha = params.globalAlpha === undefined ? 1 : params.globalAlpha;
-
-    _fontSize = fontSize;
-    _globalAlpha = globalAlpha;
-
-    ctx.fillStyle = `${color}`;
-    ctx.font = `${fontWeight} ${fontSize} ${fontFamily}`;
-    ctx.fillText('聚米画沙', 100, 100);
-  }
-  const texture = new CanvasTexture(canvas);
-  texture.needsUpdate = true;
-  return texture;
-};
 
 interface GetToolTipCanvasParam {
   text?: string;
@@ -171,6 +140,17 @@ function getCanvasWidth(text?: string, fontsize?: string) {
   return boundWidth;
 }
 
+interface Params {
+  x?: number;
+  y?: number;
+  z?: number;
+  text?: string;
+  fontFamily?: string;
+  fontSize?: string;
+  fontColor?: string;
+  fontOpacity?: number;
+  backgroundColor?: string;
+}
 let _geometry: undefined | BufferGeometry;
 
 class TextureTextSymbol extends Object3D {
@@ -178,13 +158,23 @@ class TextureTextSymbol extends Object3D {
   geometry: BufferGeometry;
   material: SpriteMaterial;
   center: Vector2;
+  isTextureTextSymbol: boolean;
+  x?: number;
+  y?: number;
+  z?: number;
+  text?: string;
+  fontFamily?: string;
+  fontSize?: string;
+  fontColor?: string;
+  fontOpacity?: number;
+  backgroundColor?: string;
 
-  constructor(material: SpriteMaterial) {
+  constructor(params: Params) {
     super();
 
     this.isSprite = true;
-
     this.type = 'Sprite';
+    this.isTextureTextSymbol = true;
 
     if (_geometry === undefined) {
       _geometry = new BufferGeometry();
@@ -201,7 +191,19 @@ class TextureTextSymbol extends Object3D {
     }
 
     this.geometry = _geometry;
-    this.material = material !== undefined ? material : new SpriteMaterial({ map: getToolTipCanvas({}) });
+
+    if (params !== undefined) {
+      this.text = params.text === undefined ? '聚米画沙' : params.text;
+      this.fontFamily = params.fontFamily === undefined ? 'arial' : params.fontFamily;
+      this.fontSize = params.fontSize === undefined ? '16px' : params.fontSize;
+      this.fontColor = params.fontColor === undefined ? '#ffffff' : params.fontColor;
+      this.fontOpacity = params.fontOpacity === undefined ? 1 : params.fontOpacity;
+      this.backgroundColor = params.backgroundColor === undefined ? '#1890FF' : params.backgroundColor;
+
+      this.material = new SpriteMaterial({ map: getToolTipCanvas({}) });
+    } else {
+      this.material = new SpriteMaterial({ map: getToolTipCanvas({}) });
+    }
 
     this.center = new Vector2(0.5, 0.5);
   }
@@ -222,12 +224,12 @@ class TextureTextSymbol extends Object3D {
     this.material.map = getToolTipCanvas({ bgColor: color });
   }
   /**
-   * @@description: 设置大小
+   * @@description: 设置文字大小
    * @param {number} size
    */
-  setSize(size: string) {
+  /*  setSize(size: string) {
     this.material.map = canvasText({ fontSize: size });
-  }
+  } */
   /**
    * @@description: 获取字体大小
    */
@@ -238,16 +240,16 @@ class TextureTextSymbol extends Object3D {
    * @@description: 文字的缩放
    * @param {number} scale
    */
-  setScale(scale: number) {
+  /*  setScale(scale: number) {
     this.material.map = canvasText({ fontSize: (parseInt(_fontSize.slice(0, -2), 10) * scale).toString() + 'px' });
-  }
+  } */
   /**
    * @@description: 设置透明度
    * @param {number} opacity
    */
-  setOpacity(opacity: number) {
+  /* setOpacity(opacity: number) {
     this.material.map = canvasText({ globalAlpha: opacity });
-  }
+  } */
   getOpacity() {
     return _globalAlpha;
   }
