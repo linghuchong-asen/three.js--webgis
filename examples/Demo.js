@@ -1,6 +1,7 @@
 import * as WEBGIS from '../build/bundle.module.js';
 import { pointFun, pointPickupFun, seriesPointsFun, selectPointFun } from './point.js';
 import { gui, dynamicFlag, _getPositionVisible } from './lil-gui.js';
+import { selectBoxFun } from './box.js';
 
 export let Model,
   scene,
@@ -99,6 +100,7 @@ const init = () => {
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('dblclick', pointPickupFun);
   container.addEventListener('mousedown', selectPointFun);
+  container.addEventListener('mousedown', selectBoxFun);
   container.addEventListener('mouseup', getPosition);
 };
 
