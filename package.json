@@ -1,4 +1,7 @@
 {
+	"name": "webgis",
+	"version": "1.0",
+	"description": "用于webgis领域的图形引擎",
 	"scripts": {
 		"commit": "git-cz",
 		"prepare": "husky install",
