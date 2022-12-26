@@ -4,7 +4,9 @@
  * @Author: yangsen
  * @Date: 2022-08-09 10:34:15
  * @LastEditors: yangsen
- * @LastEditTime: 2022-08-10 14:39:33
+ * @LastEditTime: 2022-12-20 09:10:44
  */
-export { PerspectiveCamera } from 'three';
-export { OrthographicCamera } from 'three';
+import { PerspectiveCamera } from 'three';
+import { OrthographicCamera } from 'three';
+
+export { PerspectiveCamera, OrthographicCamera };
