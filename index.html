@@ -1,3 +1,10 @@
+<!--
+ * @Description: 在实际开发过程中，我们肯定要运行代码，查看页面，这时有个本地服务器就很重要，这样可以调试代码。index.html是启动本地服务的主页面。
+ * @Author: yangsen
+ * @Date: 2022-07-28 20:08:47
+ * @LastEditors: yangsen
+ * @LastEditTime: 2023-01-04 17:36:51
+-->
 <!DOCTYPE html>
 <html lang="zh-cn">
 
@@ -10,7 +17,8 @@
 </head>
 
 <body>
-  <div>1</div>
+  <div></div>
+  <!--  这里注意如果打包出来的是esm格式，加上type=module -->
   <script src="./build/bundle.module.js" type="module"></script>
 </body>
 

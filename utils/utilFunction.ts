@@ -1,3 +1,7 @@
+/**
+ * @@description: 将传入的arr切割成num长度的多个小数组。
+ * @param {chunkArrayParam} params
+ */
 interface chunkArrayParam {
   arr: any[];
   num: number;

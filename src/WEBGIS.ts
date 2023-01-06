@@ -4,13 +4,14 @@
  * @Author: yangsen
  * @Date: 2022-08-06 10:20:09
  * @LastEditors: yangsen
- * @LastEditTime: 2022-08-20 12:02:43
+ * @LastEditTime: 2023-01-06 13:40:47
  */
 
-export * from './basics/Camera';
-export * from './basics/Scene';
+export * from './core/Camera';
+export * from './core/Scene';
+export * from './core/Viewer';
+
 export * from './basics/Light';
-export * from './basics/WebglRenderer';
 export * from './basics/Clock';
 export * from './basics/Raycaster';
 
@@ -26,16 +27,18 @@ export * from './math/Box3';
 
 export * from './annex/CatmullRomCurve3';
 
-export * from './control/OrbitControls';
+export * from './annex/OrbitControls';
 
 export * from './helper/AxesHelper';
 export * from './helper/BoxHelper';
 
 export * from '../utils/lil-gui';
 
-export * from './symbols/LineSolidSymbol';
-export * from './symbols/PointSymbol';
-export * from './symbols/LineDottedSymbol';
-export * from './symbols/DOMTextSymbol';
-export * from './symbols/TextureTextSymbol';
-export * from './symbols/BoxSymbol';
+export * from './entity/LineSolidSymbol';
+export * from './entity/PointSymbol';
+export * from './entity/LineDottedSymbol';
+export * from './entity/DOMTextSymbol';
+export * from './entity/TextureTextSymbol';
+export * from './entity/BoxSymbol';
+
+export * from './primitive/Model';

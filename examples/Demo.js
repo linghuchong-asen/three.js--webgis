@@ -33,6 +33,7 @@ const getPosition = (event) => {
   const intersection = intersections.length > 0 ? intersections[0] : null;
   if (intersection) _getPointPosition = intersection.point;
 
+  
   if (_getPositionVisible) {
     const point = new WEBGIS.PointSymbol();
     point.position.set(_getPointPosition.x, _getPointPosition.y + 1, _getPointPosition.z);
@@ -149,6 +150,7 @@ const glb = () => {
   // glb模型加载
   const loader = new WEBGIS.GLTFLoader();
   loader.load('./assets/housePlayground.glb', function (glb) {
+    console.log(glb);
     Model = glb.scene;
 
     Model.scale.set(1.5, 1.5, 1.5);
