@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ESNEXT", /* target用于指定编译后js文件里的语法应该遵循哪个JavaScript的版本的版本目标: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019' or 'ESNEXT'. */
+    "module": "ESNEXT", // 指定使用模块: 'commonjs', 'amd', 'system', 'umd' or 'es2015' or 'ESNext'
+    "lib": ["ESNext","DOM"], // 在我们的代码中显示的指明需要支持的 ECMAScript 语法或环境对应的类型声明文件。
+    "allowJs": true, // 允许编译 javascript 文件
+    "checkJs": true, // 报告 javascript 文件中的错误
+    "jsx": "preserve", // 指定 jsx 代码的生成: 'preserve', 'react-native', or 'react'
+    "declaration": true, // declaration的值为true或false，用来指定是否在编译的时候生成相应的".d.ts"声明文件。如果设为true，编译每个ts文件之后会生成一个js文件和一个声明文件。但是declaration和allowJs不能同时设为true
+    "declarationMap": true, // 值为true或false，指定是否为声明文件.d.ts生成map文件 
+    "declarationDir": "./build/types", // 生成的 '.d.ts' 文件保存文件夹
+    "sourceMap": true, // 生成相应的 '.map' 文件
+    "outDir": "./build", // 指定输出目录
+    "rootDir": "./", // 用来控制输出目录结构 --outDir.
+    "removeComments": true, // 删除编译后的所有的注释
+    "importHelpers": true, // 从 tslib 导入辅助工具函数
+    "isolatedModules": true, // 将每个文件做为单独的模块 （与 'ts.transpileModule' 类似）.
+    "allowSyntheticDefaultImports": true, // 允许从没有设置默认导出的模块中默认导入。
+    "noFallthroughCasesInSwitch": true, // 用于检查switch中是否有case没有使用break跳出switch，默认为false
+    "noUnusedParameters": false, // 用于检查是否有在函数体中没有使用的参数，这个也可以配合eslint来做检查，默认为false
+    "noImplicitReturns": false, // 用于检查函数是否有返回值，设为true后，如果函数没有返回值则会提示，默认为false
+    "moduleResolution": "node", // 用于选择模块解析策略，有'node'和'classic'两种类型'
+    "esModuleInterop": true, // 通过为导入内容创建命名空间，实现CommonJS和ES模块之间的互操作性
+    "noUnusedLocals": true,  // 用于检查是否有定义了但是没有使用的变量，对于这一点的检测，使用eslint可以在你书写代码的时候做提示，你可以配合使用。它的默认值为false 
+
+    /*  Strict Type-Checking Options */
+    "strict": true, // strict的值为true或false，用于指定是否启动所有类型检查，如果设为true则会同时开启下面这几个(这里就不列举了，可以查看tsconfig.json配置)严格类型检查，默认为false
+  },
+   /* 指定编译文件或排除指定编译文件 */
+   "include": ["src/**/*","utils/**/*"],
+   "exclude": [],
+  //  "references": ["@types/three"],
+}

@@ -1,0 +1,7 @@
+root = true
+
+[*] //表示匹配多有类型的文件
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8

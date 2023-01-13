@@ -1,0 +1,58 @@
+{
+	"name": "webgis",
+	"version": "1.0",
+	"description": "用于webgis领域的图形引擎",
+	"scripts": {
+		"commit": "git-cz",
+		"prepare": "husky install",
+		"type-check": "tsc --noEmit",
+		"type-check:watch": "npm run type-check -- --watch",
+		"build:types": "cross-env NODE_ENV=build tsc --emitDeclarationOnly",
+		"build:js": "cross-env NODE_ENV=build rollup -c",
+		"build": "cross-env NODE_ENV=build pnpm run build:types && pnpm run build:js",
+		"dev:types": "cross-env NODE_ENV=develop tsc --emitDeclarationOnly",
+		"dev:js": "cross-env NODE_ENV=develop  rollup -c rollup.config.js -w",
+		"dev": "cross-env NODE_ENV=develop pnpm run dev:types && pnpm run dev:js",
+		"lint": "lint-staged"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.18.9",
+		"@babel/plugin-proposal-class-properties": "^7.18.6",
+		"@babel/plugin-proposal-object-rest-spread": "^7.18.9",
+		"@babel/plugin-proposal-private-methods": "^7.18.6",
+		"@babel/plugin-proposal-private-property-in-object": "^7.18.6",
+		"@babel/preset-env": "^7.18.9",
+		"@babel/preset-typescript": "^7.18.6",
+		"@commitlint/cli": "^17.0.3",
+		"@commitlint/config-conventional": "^17.0.3",
+		"@rollup/plugin-babel": "^5.3.1",
+		"@rollup/plugin-commonjs": "^22.0.1",
+		"@rollup/plugin-node-resolve": "^13.3.0",
+		"@typescript-eslint/eslint-plugin": "^5.32.0",
+		"@typescript-eslint/parser": "^5.32.0",
+		"commitizen": "^4.2.5",
+		"cross-env": "^7.0.3",
+		"cz-conventional-changelog": "^3.3.0",
+		"eslint": "^8.21.0",
+		"eslint-plugin-alloy": "^1.2.1",
+		"husky": "^8.0.0",
+		"lint-staged": "^13.0.3",
+		"rollup": "^2.77.2",
+		"rollup-plugin-dts": "^4.2.2",
+		"rollup-plugin-livereload": "^2.0.5",
+		"rollup-plugin-serve": "^2.0.0",
+		"rollup-plugin-terser": "^7.0.2"
+	},
+	"config": {
+		"commitizen": {
+			"path": "node_modules/cz-conventional-changelog"
+		}
+	},
+	"dependencies": {
+		"@rollup/plugin-alias": "^3.1.9",
+		"@types/three": "^0.143.0",
+		"@types/webxr": "^0.5.0",
+		"three": "^0.143.0",
+		"typescript": "^4.7.4"
+	}
+}

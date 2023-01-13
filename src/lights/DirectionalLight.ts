@@ -1,0 +1,1 @@
+export { DirectionalLight } from 'three';

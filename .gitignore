@@ -1,0 +1,8 @@
+/node_modules
+*debug.log
+/build
+/types
+*.gltf
+*.glb
+*.obj
+*.mtl
