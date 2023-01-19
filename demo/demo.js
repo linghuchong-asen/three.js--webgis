@@ -3,13 +3,16 @@
  * @Author: yangsen
  * @Date: 2023-01-10 18:05:40
  * @LastEditors: yangsen
- * @LastEditTime: 2023-01-13 14:58:22
+ * @LastEditTime: 2023-01-17 14:28:24
  */
 
 import * as Webgis from '../build/bundle.module.js';
 
 const viewer = new Webgis.Viewer('WebgisContainer');
 const scene = viewer.scene;
+/* 改变地面颜色 */
+viewer.groundColor = new Webgis.Color(127, 140, 141);
+console.log(viewer.groundColor);
 
 /* 加载模型 */
 const model = new Webgis.Model('./assets/housePlayground230113.glb');

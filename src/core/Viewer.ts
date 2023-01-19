@@ -1,9 +1,9 @@
 /*
- * @Description:Viewer类
+ * @Description: Viewer类
  * @Author: yangsen
  * @Date: 2022-12-19 10:38:45
  * @LastEditors: yangsen
- * @LastEditTime: 2023-01-13 21:40:07
+ * @LastEditTime: 2023-01-17 15:49:53
  */
 
 import { Scene } from './Scene';
@@ -18,7 +18,8 @@ import { Vector3 } from '../math/Vector3';
 import { Raycaster } from '../basics/Raycaster';
 import { MeshBasicMaterial } from '../material/MeshBasicMaterial';
 import { Mesh } from '../mesh/Mesh';
-import * as THREE from 'three';
+import { PlaneGeometry } from '../geometries/PlaneGeometry';
+import { Color } from '../math/Color';
 
 const scene = new Scene();
 const renderer = new WebGLRenderer();
@@ -58,12 +59,12 @@ class Viewer {
   /* 初始化场景 */
   initScene() {
     // 场景中增加一个很大的地面
-    const groundGeometry = new THREE.BoxGeometry(10000, 2, 10000, 1, 1, 1);
-    const material = new MeshBasicMaterial({ color: 0x747d8c, side: 0 });
+    const groundGeometry = new PlaneGeometry(1000, 1000);
+    const material = new MeshBasicMaterial({ color: new Color(206, 214, 224), side: 2 });
     const ground = new Mesh(groundGeometry, material);
     ground.name = 'ground';
     ground.position.set(0, -1, 0);
-    // ground.rotateX(Math.PI / 2);
+    ground.rotateX(-Math.PI / 2);
     this.scene.add(ground);
     this.scene.light.position.set(1, 1, 1);
     this.scene.add(this.scene.light);
@@ -113,7 +114,7 @@ class Viewer {
     raycaster.setFromCamera(position, this.scene.camera);
 
     const objArr = raycaster.intersectObject(this.scene, true);
-    console.log(objArr);
+
     const point = objArr[0].point;
     return point === undefined ? undefined : point;
   }

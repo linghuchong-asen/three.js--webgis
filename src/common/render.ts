@@ -8,7 +8,7 @@ export const initRender = (renderer: WebGLRenderer, scene: Scene, camera: Camera
   // 渲染器配置
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setClearColor(new Color(0xdfe6e9), 1);
+  renderer.setClearColor(new Color(223, 230, 233), 1);
   renderer.render(scene, camera);
 
   // 渲染到页面
