@@ -17,4 +17,13 @@ const chunkArray = (params: chunkArrayParam) => {
   });
   return newArr;
 };
-export { chunkArray };
+
+/* 获取jpg图片地址 */
+const getJpgUrl = (url: string) => {
+  const { href } = new URL(`../src/assets/${url}.jpg`, import.meta.url);
+  return href;
+};
+
+/* 将数组分成相邻两个一对的二维数组 */
+
+export { getJpgUrl, chunkArray };

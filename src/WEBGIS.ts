@@ -28,7 +28,7 @@ export * from './annex/OrbitControls';
 
 export * from './helper/BoxHelper';
 
-export * from '../utils/lil-gui';
+export * from './utils/lil-gui';
 
 export * from './entity/LineSolidSymbol';
 export * from './entity/PointSymbol';

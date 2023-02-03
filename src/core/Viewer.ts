@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2022-12-19 10:38:45
  * @LastEditors: yangsen
- * @LastEditTime: 2023-01-17 15:49:53
+ * @LastEditTime: 2023-01-31 10:58:23
  */
 
 import { Scene } from './Scene';
@@ -20,6 +20,9 @@ import { MeshBasicMaterial } from '../material/MeshBasicMaterial';
 import { Mesh } from '../mesh/Mesh';
 import { PlaneGeometry } from '../geometries/PlaneGeometry';
 import { Color } from '../math/Color';
+import { CubeTextureLoader } from '../loader/CubeTextureLoader';
+import type { Sources } from '@/typings/index';
+import { getJpgUrl } from '@/utils/utilFunction';
 
 const scene = new Scene();
 const renderer = new WebGLRenderer();
@@ -32,6 +35,7 @@ class Viewer {
     this.initScene();
     // 初始向scene中添加图元组
     this.scene.add(this.scene.primitives);
+    this.setSkyBox(); // 设置天空盒
 
     if (this.container !== null) {
       // 初始化渲染器
@@ -64,7 +68,6 @@ class Viewer {
     const ground = new Mesh(groundGeometry, material);
     ground.name = 'ground';
     ground.position.set(0, -1, 0);
-    ground.rotateX(-Math.PI / 2);
     this.scene.add(ground);
     this.scene.light.position.set(1, 1, 1);
     this.scene.add(this.scene.light);
@@ -72,6 +75,22 @@ class Viewer {
     if (this.axes) this.scene.add(axesHelper);
     this.scene.camera.position.set(70, 70, 70);
     this.scene.camera.lookAt(this.scene.position);
+    this.scene.camera.up.set(0, 0, 1);
+  }
+
+  /* 设置天空盒 */
+  private skyBoxSource: Sources = {
+    px: getJpgUrl('textures/skyBox/tycho2t3_80_px'),
+    mx: getJpgUrl('textures/skyBox/tycho2t3_80_mx'),
+    py: getJpgUrl('textures/skyBox/tycho2t3_80_py'),
+    my: getJpgUrl('textures/skyBox/tycho2t3_80_my'),
+    pz: getJpgUrl('textures/skyBox/tycho2t3_80_pz'),
+    mz: getJpgUrl('textures/skyBox/tycho2t3_80_mz'),
+  };
+  setSkyBox(source: Sources = this.skyBoxSource, show: boolean = true) {
+    const loader = new CubeTextureLoader();
+    const texture = loader.load([source.px, source.mx, source.py, source.my, source.pz, source.mz]);
+    this.scene.background = texture;
   }
 
   /* 根据图元名称获取图元 */

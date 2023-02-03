@@ -22,12 +22,14 @@
     "moduleResolution": "node", // 用于选择模块解析策略，有'node'和'classic'两种类型'
     "esModuleInterop": true, // 通过为导入内容创建命名空间，实现CommonJS和ES模块之间的互操作性
     "noUnusedLocals": true,  // 用于检查是否有定义了但是没有使用的变量，对于这一点的检测，使用eslint可以在你书写代码的时候做提示，你可以配合使用。它的默认值为false 
+    "baseUrl": ".", // .等价于./ 表示当前文件夹
+    "paths": {"@/*":["src/*"]},
 
     /*  Strict Type-Checking Options */
     "strict": true, // strict的值为true或false，用于指定是否启动所有类型检查，如果设为true则会同时开启下面这几个(这里就不列举了，可以查看tsconfig.json配置)严格类型检查，默认为false
   },
    /* 指定编译文件或排除指定编译文件 */
-   "include": ["src/**/*","utils/**/*"],
+   "include": ["src/utils/**/*","src/**/*"],
    "exclude": [],
   //  "references": ["@types/three"],
 }

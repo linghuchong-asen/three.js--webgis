@@ -4,7 +4,7 @@
  * @Author: yangsen
  * @Date: 2022-07-28 16:53:28
  * @LastEditors: yangsen
- * @LastEditTime: 2023-01-10 17:35:47
+ * @LastEditTime: 2023-01-30 10:32:26
  */
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
@@ -38,7 +38,7 @@ let builds = [
         exclude: 'node_modules/**',
         extensions, // 参数extensions表示要处理的文件类型，使用ts语法时，当用typescript编译时这个参数可以省略，但使用babel编译ts时必须加上这个参数
         babelHelpers: 'bundled',
-        include: ['src/**/*'],
+        include: ['src/**/*','utils/**/*'],
       }),
       alias({
         entries: [
@@ -69,7 +69,7 @@ let builds = [
         exclude: 'node_modules/**',
         extensions, // 参数extensions表示要处理的文件类型，使用ts语法时，当用typescript编译时这个参数可以省略，但使用babel编译ts时必须加上这个参数
         babelHelpers: 'bundled',
-        include: ['src/**/*', 'utils/**/*'],
+        include: ['utils/**/*', 'src/**/*'],
       }),
       alias({
         entries: [
@@ -88,9 +88,15 @@ let builds = [
     ],
     external: [], // 不想被打包的依赖
   },
+  /* three.js声明文件 */
   {
     input: './types/three/index.d.ts',
     output: [{ file: './build/three.d.ts', format: 'esm' }],
+    plugins: [dts()],
+  },
+  {
+    input: './src/typings/index.d.ts',
+    output: [{ file: './build/types/src/typings/index.d.ts', format: 'esm' }],
     plugins: [dts()],
   },
   {
@@ -103,7 +109,7 @@ let builds = [
 switch (process.env.NODE_ENV) {
   case 'develop':
     // builds = [builds[1]];
-    builds = [builds[1], builds[2], builds[3]];
+    builds = [builds[1], builds[2], builds[3],builds[4]];
     break;
   case 'build':
     builds = builds[0];
