@@ -1,45 +1,49 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Document</title>
-    <style>
-      html,
-      body {
-        padding: 0;
-        margin: 0;
-      }
-      #coordinate {
-        position: absolute;
-      }
-      #x,
-      #y,
-      #z {
-        margin-left: 10px;
-      }
-    </style>
-  </head>
 
-  <body>
-    <!-- 展示坐标容器 -->
-    <div id="coordinate">
-      <div>
-        <span>X:</span>
-        <span id="x"></span>
-      </div>
-      <div>
-        <span>Y:</span>
-        <span id="y"></span>
-      </div>
-      <div>
-        <span>Z:</span>
-        <span id="z"></span>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>three.js封装demo</title>
+  <style>
+    html,
+    body {
+      padding: 0;
+      margin: 0;
+    }
+
+    #coordinate {
+      position: absolute;
+    }
+
+    #x,
+    #y,
+    #z {
+      margin-left: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 展示坐标容器 -->
+  <div id="coordinate">
+    <div>
+      <span>X:</span>
+      <span id="x"></span>
     </div>
-    <div id="WebgisContainer"></div>
-    <script src="demo.js" type="module"></script>
-    <script src="dom.js" type="module"></script>
-  </body>
+    <div>
+      <span>Y:</span>
+      <span id="y"></span>
+    </div>
+    <div>
+      <span>Z:</span>
+      <span id="z"></span>
+    </div>
+  </div>
+  <div id="WebgisContainer"></div>
+  <script src="demo.js" type="module"></script>
+  <script src="dom.js" type="module"></script>
+</body>
+
 </html>

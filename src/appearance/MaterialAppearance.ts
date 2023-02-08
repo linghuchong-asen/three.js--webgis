@@ -3,7 +3,15 @@
  * @Author: yangsen
  * @Date: 2023-01-30 10:01:14
  * @LastEditors: yangsen
- * @LastEditTime: 2023-01-30 10:01:32
+ * @LastEditTime: 2023-02-08 15:06:00
  */
-class MaterialAppearance {}
+interface Options {
+  material: any;
+}
+class MaterialAppearance {
+  material: any;
+  constructor(options: Options) {
+    this.material = options.material.material;
+  }
+}
 export { MaterialAppearance };

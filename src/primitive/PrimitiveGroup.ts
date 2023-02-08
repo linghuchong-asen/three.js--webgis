@@ -3,9 +3,10 @@
  * @Author: yangsen
  * @Date: 2023-01-05 18:21:33
  * @LastEditors: yangsen
- * @LastEditTime: 2023-01-31 11:06:36
+ * @LastEditTime: 2023-02-08 15:51:12
  */
-import { Object3D } from 'three';
+import { Object3D, Mesh, Points } from 'three';
+import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { GLTFLoader } from '../loader/GLTFLoader';
 class PrimitiveGroup extends Object3D {
   type: string;
@@ -40,7 +41,30 @@ class PrimitiveGroup extends Object3D {
         },
       );
     } else {
-      children.push(obj);
+      const geometry = obj.geometry.geometry;
+      const material = obj.material;
+
+      if (obj.geometry.type === 'line2') {
+        const line2 = new Line2(geometry, material);
+
+        // line2.rotateY(Math.PI);
+        children.push(line2);
+      } else if (obj.geometry.type === 'pointGeometry') {
+        const point = new Points(geometry, material);
+        children.push(point)
+      } else {
+        console.log(geometry);
+        const mesh = new Mesh(geometry, material);
+        // mesh.rotateY(Math.PI);
+        children.push(mesh);
+      }
+
+      // mesh.translateZ(-100);
+
+      /* children.push(obj.geometry.outline);
+      if (obj.geometry.openFluidWll === true) {
+        children.push(obj.geometry.wall);
+      } */
     }
   }
 }

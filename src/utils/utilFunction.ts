@@ -6,8 +6,8 @@ interface chunkArrayParam {
   arr: any[];
   num: number;
 }
-const chunkArray = (params: chunkArrayParam) => {
-  let newArr!: any[];
+export const chunkArray = (params: chunkArrayParam) => {
+  let newArr: any[] = [];
   params.arr.map((item, index) => {
     const newArrIndex = index % params.num;
     if (newArrIndex === 0) {
@@ -19,11 +19,25 @@ const chunkArray = (params: chunkArrayParam) => {
 };
 
 /* 获取jpg图片地址 */
-const getJpgUrl = (url: string) => {
+export const getJpgUrl = (url: string) => {
   const { href } = new URL(`../src/assets/${url}.jpg`, import.meta.url);
   return href;
 };
+/* 获取png图片地址 */
+export const getPngUrl = (url: string) => {
+  const { href } = new URL(`../src/assets/${url}.png`, import.meta.url);
+  return href;
+};
 
-/* 将数组分成相邻两个一对的二维数组 */
-
-export { getJpgUrl, chunkArray };
+/* 16进制对照表 */
+export const hexArr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+/* RGB转16进制颜色 */
+export const RGBTranslateHex = (param: [number, number, number]): string => {
+  let hexStr = '0x';
+  param.forEach((item, index) => {
+    const quotient = hexArr[Math.floor(param[index] / 16)];
+    const remainder = param[index] % 16;
+    hexStr += quotient + remainder;
+  });
+  return hexStr;
+};

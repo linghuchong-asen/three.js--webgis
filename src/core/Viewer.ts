@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2022-12-19 10:38:45
  * @LastEditors: yangsen
- * @LastEditTime: 2023-01-31 10:58:23
+ * @LastEditTime: 2023-02-08 14:22:54
  */
 
 import { Scene } from './Scene';
@@ -57,14 +57,14 @@ class Viewer {
   scene = scene;
   entities = new EntityGroup();
   axes = true;
-
+  groundColor = new Color(87, 96, 111);
   /* 监听entities的add方法：调用add方法时，通过scene.primitives.add添加图元，完成实体向图元的转换 */
 
   /* 初始化场景 */
   initScene() {
     // 场景中增加一个很大的地面
     const groundGeometry = new PlaneGeometry(1000, 1000);
-    const material = new MeshBasicMaterial({ color: new Color(206, 214, 224), side: 2 });
+    const material = new MeshBasicMaterial({ color: this.groundColor, side: 2 });
     const ground = new Mesh(groundGeometry, material);
     ground.name = 'ground';
     ground.position.set(0, -1, 0);
@@ -99,6 +99,7 @@ class Viewer {
     return object;
   }
 
+  /* 拾取物体，返回包含所有物体的数组 */
   drillPick(position: Vector2, objects: Object3D[], recursive?: boolean) {
     const windowPosition = new Vector2();
     windowPosition.x = (position.x / window.innerWidth) * 2 - 1;
@@ -110,6 +111,7 @@ class Viewer {
     return objArr;
   }
 
+  /* 拾取物体，返回第一个 */
   pick(position: Vector2, object: Object3D, recursive?: boolean) {
     const windowPosition = new Vector2();
     windowPosition.x = (position.x / window.innerWidth) * 2 - 1;
