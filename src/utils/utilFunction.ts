@@ -1,3 +1,5 @@
+import { Color } from '@/math/Color';
+import { Color as ThreeColor } from 'three';
 /**
  * @@description: 将传入的arr切割成num长度的多个小数组。
  * @param {chunkArrayParam} params
@@ -40,4 +42,21 @@ export const RGBTranslateHex = (param: [number, number, number]): string => {
     hexStr += quotient + remainder;
   });
   return hexStr;
+};
+
+/* 获取数组最大值 */
+export const arrMaxNum = (arr: Array<any>) => {
+  let max: number = 1;
+  arr.forEach((item) => {
+    if (item > max) {
+      max = item;
+    }
+  });
+  return max;
+};
+
+/* rgba转换为three.js的color需要的rgb */
+export const translateColor = (color: Color) => {
+  const threeColor = new ThreeColor(`rgb(${color.r * 255},${color.g * 255},${color.b * 255})`);
+  return threeColor;
 };

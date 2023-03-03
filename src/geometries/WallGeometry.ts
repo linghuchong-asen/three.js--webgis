@@ -3,19 +3,19 @@
  * @Author: yangsen
  * @Date: 2023-02-08 08:32:56
  * @LastEditors: yangsen
- * @LastEditTime: 2023-02-08 08:48:48
+ * @LastEditTime: 2023-03-02 10:44:50
  */
-import { Shape, ShapeGeometry, ExtrudeBufferGeometry } from 'three';
-import { chunkArray } from '@/utils/utilFunction';
+import { Shape, ShapeGeometry, ExtrudeBufferGeometry, Vector2 } from 'three';
+
 class WallGeometry {
-  positionArr: number[];
+  positionArr: Vector2[];
   geometry: ShapeGeometry;
   height: number;
   hasEdge: boolean;
   openFluidWll: boolean;
   type: string;
 
-  constructor(positionArr: number[]) {
+  constructor(positionArr: Vector2[]) {
     this.positionArr = positionArr;
     this.createShape();
     this.geometry = this.createGeometry();
@@ -27,20 +27,14 @@ class WallGeometry {
   private shape = new Shape();
 
   private createShape() {
-    const length = this.positionArr.length;
-    const isEven = length % 2 === 0 ? true : false;
-    if (!isEven) {
-      throw new Error('PolygonGeometry位置参数数量必须是偶数');
-    }
-    const doubleArr = chunkArray({ arr: this.positionArr, num: 2 });
-    doubleArr.forEach((item, index) => {
+    this.positionArr.forEach((item, index) => {
       if (index === 0) {
-        this.shape.moveTo(item[0], item[1]);
+        this.shape.moveTo(item.x, item.y);
       } else {
-        this.shape.lineTo(item[0], item[1]);
+        this.shape.lineTo(item.x, item.y);
       }
     });
-    this.shape.lineTo(doubleArr[0][0], doubleArr[0][1]);
+    this.shape.lineTo(this.positionArr[0].x, this.positionArr[0].y);
   }
   private createGeometry() {
     const geometry = new ExtrudeBufferGeometry(this.shape, { depth: 1 });

@@ -13,7 +13,8 @@
       margin: 0;
     }
 
-    #coordinate {
+    #coordinate,
+    #cameraFly {
       position: absolute;
     }
 
@@ -22,10 +23,15 @@
     #z {
       margin-left: 10px;
     }
+
+    #cameraFly {
+      top: 70px;
+    }
   </style>
 </head>
 
 <body>
+
   <!-- 展示坐标容器 -->
   <div id="coordinate">
     <div>
@@ -41,6 +47,8 @@
       <span id="z"></span>
     </div>
   </div>
+  <button id="cameraFly">flyTo</button>
+  <button id="highLight">highLight</button>
   <div id="WebgisContainer"></div>
   <script src="demo.js" type="module"></script>
   <script src="dom.js" type="module"></script>

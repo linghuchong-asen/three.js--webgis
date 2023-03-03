@@ -3,15 +3,18 @@
  * @Author: yangsen
  * @Date: 2023-01-30 10:01:14
  * @LastEditors: yangsen
- * @LastEditTime: 2023-02-08 15:06:00
+ * @LastEditTime: 2023-03-02 21:06:49
  */
+import { Appearance } from '@/appearance/Appearance';
+
 interface Options {
   material: any;
 }
-class MaterialAppearance {
+class MaterialAppearance extends Appearance {
   material: any;
   constructor(options: Options) {
-    this.material = options.material.material;
+    super();
+    this.material = options.material;
   }
 }
 export { MaterialAppearance };

@@ -3,20 +3,30 @@
  * @Author: yangsen
  * @Date: 2023-01-10 18:05:40
  * @LastEditors: yangsen
- * @LastEditTime: 2023-02-08 15:51:58
+ * @LastEditTime: 2023-03-03 18:37:03
  */
-
 import * as Webgis from '../build/bundle.module.js';
 
 const viewer = new Webgis.Viewer('WebgisContainer');
-const scene = viewer.scene;
+
 /* 改变地面颜色 */
 viewer.groundColor = new Webgis.Color(87, 96, 111);
 
 /* 加载模型 */
-const model = new Webgis.Model('./assets/housePlayground230113.glb');
-// viewer.scene.primitives.append(model);
-model.position = new Webgis.Vector3(10, 2, 0);
+const modelGeometry = new Webgis.ModelGeometry()
+const modelMaterial = new Webgis.ModelMaterial()
+modelMaterial.url = './assets/shouan3-2-1png(1).glb'
+/* viewer.scene.primitives.append(
+  new Webgis.Primitive({
+    geometryInstance: new Webgis.GeometryInstance({
+      geometry: modelGeometry,
+    }),
+    appearance: new Webgis.MaterialAppearance({
+      material: modelMaterial,
+    }),
+    id:"modelId"
+  }),
+); */
 
 /* 拾取点 */
 document.addEventListener('click', (e) => {
@@ -24,9 +34,8 @@ document.addEventListener('click', (e) => {
   position.x = e.clientX;
   position.y = e.clientY;
 
-  if (model.isModelReady) {
+  if (modelMaterial.isReady) {
     const point = viewer.pickPosition(position);
-
     document.getElementById('x').innerHTML = point.x;
     document.getElementById('y').innerHTML = point.y;
     document.getElementById('z').innerHTML = point.z;
@@ -43,13 +52,12 @@ document.addEventListener('click', (e) => {
   mz: './assets/textures/roomBox/nz.jpg',
 },true); */
 
-/* 添加区域  */
-const positionArr = [5, 5, -5, 5, -5, -5, 5, -5];
+/* 添加区域  */   
+const positionArr = [new Webgis.Vector2(5,5), new Webgis.Vector2(-5, 5), new Webgis.Vector2(-5, -5), new Webgis.Vector2(5, -5)];
 const polygonGeometry = new Webgis.PolygonGeometry(positionArr);
-// 设置拉伸高度
-polygonGeometry.stretch(10);
-polygonGeometry.openFluidWll = true;
-const polygonMaterial = new Webgis.PolygonMaterial('#f1c40f');
+// 设置拉伸高度  
+polygonGeometry.stretch(50);
+const polygonMaterial = new Webgis.PolygonMaterial(new Webgis.Color(184, 189, 51,0.5),50); 
 viewer.scene.primitives.append(
   new Webgis.Primitive({
     geometryInstance: new Webgis.GeometryInstance({
@@ -58,13 +66,15 @@ viewer.scene.primitives.append(
     appearance: new Webgis.MaterialAppearance({
       material: polygonMaterial,
     }),
+    id:"polygonId"
   }),
 );
 
 /* 添加墙 */
-const wallPosition = [-7, 1, -15, 1, -15, 10, -7, 10]
+const wallPosition = [new Webgis.Vector2(-7, 1),new Webgis.Vector2(-15, 1),new Webgis.Vector2(-15, 10),new Webgis.Vector2(-7, 10) ]
 const wallGeometry = new Webgis.WallGeometry(wallPosition);
-const wallMaterial = new Webgis.WallMaterial();
+wallGeometry.stretch(10)
+const wallMaterial = new Webgis.WallMaterial(new Webgis.Color(60, 158, 78,1));
 viewer.scene.primitives.append(
   new Webgis.Primitive({
     geometryInstance: new Webgis.GeometryInstance({
@@ -73,8 +83,26 @@ viewer.scene.primitives.append(
     appearance: new Webgis.MaterialAppearance({
       material: wallMaterial,
     }),
+    id:"wallId"
   }),
 );
+/* 流体墙 */
+const wallPositionFluid = [new Webgis.Vector2(5.5,5.5), new Webgis.Vector2(-5.5, 5.5), new Webgis.Vector2(-5.5, -5.5), new Webgis.Vector2(5.5, -5.5)]
+const wallGeometryFluid = new Webgis.WallGeometry(wallPositionFluid);
+wallGeometryFluid.stretch(50)
+const wallMaterialFluid = new Webgis.WallMaterial(new Webgis.Color(60, 158, 78,0.6));
+wallMaterialFluid.isFluid = true;
+/* viewer.scene.primitives.append(
+  new Webgis.Primitive({
+    geometryInstance: new Webgis.GeometryInstance({
+      geometry: wallGeometryFluid,
+    }),
+    appearance: new Webgis.MaterialAppearance({
+      material: wallMaterialFluid,
+    }),
+    id:"wallFluidId"
+  }),
+); */
 
 /* 添加线 */
 const polylineGeometry = new Webgis.PolylineGeometry();
@@ -82,7 +110,7 @@ const polylineGeometry = new Webgis.PolylineGeometry();
 const polyline = [-10, 0, 10, 10, 10, 0, 10, 0, 0];
 polylineGeometry.setPath(polyline);
 const polylineMaterial = new Webgis.PolylineMaterial([147, 172, 130]);
-// 设置线宽
+// 设置线宽  
 polylineMaterial.lineWidth = 10
 // 设置颜色
 // 设置线类型（实线/虚线）
@@ -98,19 +126,105 @@ viewer.scene.primitives.append(
 );
 
 /* 添加点 */
-console.log(Webgis);
 const pointGeometry = new Webgis.PointGeometry()
 pointGeometry.setPosition([-16, 15, 15]);
-const pointMaterial = new Webgis.PointMaterial()
-pointMaterial.setSize(5)
+const pointMaterial = new Webgis.PointMaterial();
+pointMaterial.setSize(5);
+pointMaterial.setColor(new Webgis.Color(187, 79, 189, 1));
+pointMaterial.setOpacity(0.9);
 viewer.scene.primitives.append(
   new Webgis.Primitive({
     geometryInstance: new Webgis.GeometryInstance({
       geometry: pointGeometry,
+      /* 点不支持缩放，旋转 */
     }),
     appearance: new Webgis.MaterialAppearance({
       material: pointMaterial,
     }),
+    id:"pointId"
   }),
 );
-export {};
+
+/* 广告牌 */
+const billboardGeometry = new Webgis.BillboardGeometry()
+// 位置
+billboardGeometry.position = new Webgis.Vector3(10,10,10)
+const billboardMaterial = new Webgis.BillboardMaterial()
+// 贴图
+billboardMaterial.image = "./assets/icon/1.png"
+viewer.scene.primitives.append(new Webgis.Primitive({
+  geometryInstance: new Webgis.GeometryInstance({
+    geometry: billboardGeometry,
+    scale: new Webgis.Vector3(6, 6, 6) 
+    /* 广告牌不支持旋转 */
+  }),
+  appearance: new Webgis.MaterialAppearance({
+    material: billboardMaterial,
+  }),
+  id:"billboard"
+}))
+
+/* 文字 */
+const labelGeometry = new Webgis.LabelGeometry();
+// 位置
+labelGeometry.position = new Webgis.Vector3(10, 10, 10);
+const labelMaterial = new Webgis.LabelMaterial();
+// 文字内容
+labelMaterial.text = "Label文字"
+// 粗细 大小 字体
+labelMaterial.font = "normal 200px 微软雅黑";
+// 颜色
+labelMaterial.fillColor = new Webgis.Color(109, 139, 241,1)
+// 添加边框
+labelMaterial.isOutline = true;
+// 边框颜色
+labelMaterial.outlineColor = new Webgis.Color(238, 121, 89,1);
+// 边框宽度
+labelMaterial.outlineWidth = 5;
+viewer.scene.primitives.append(
+  new Webgis.Primitive({
+    geometryInstance: new Webgis.GeometryInstance({
+      geometry: labelGeometry,
+      // 平移
+      translate: new Webgis.Vector3(0, 0, -6),
+      // 缩放 注意：缩放要和文字大小配合使用，如果放大很大，而文字大小很小会出现文字模糊现象
+      scale: new Webgis.Vector3(5, 5, 5),
+      /* 文字不支持旋转 */
+    }),
+    appearance: new Webgis.MaterialAppearance({
+      material: labelMaterial,
+    }),
+    show: true, // 显示隐藏
+    id: "labelId",
+    select: false,
+  }),
+);
+
+/* 根据id获取primitive */
+const labelPrimitive = viewer.scene.primitives.getById("labelId")
+const pointPrimitive = viewer.scene.primitives.getById("pointId");
+const modelPrimitive = viewer.scene.primitives.getById("modelId");
+const billboard = viewer.scene.primitives.getById("billboard");
+const polygonPrimitive = viewer.scene.primitives.getById("polygonId")
+const wallPrimitive = viewer.scene.primitives.getById("wallId")
+
+
+/* 相机飞行 */
+const button = document.getElementById("cameraFly");
+button.addEventListener('click', () => {
+  viewer.flyTo(modelPrimitive)
+})
+
+/* 图元高亮 */
+const highLightButton = document.getElementById("highLight");
+let highFlag = true;
+highLightButton.addEventListener("click", () => {
+  if (highFlag) {
+    viewer.highLight([billboard, pointPrimitive, polygonPrimitive]);
+    highFlag = false;
+  } else {
+    viewer.highLight([wallPrimitive]);
+    highFlag = true;
+  }
+  
+})

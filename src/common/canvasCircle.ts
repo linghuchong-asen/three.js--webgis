@@ -7,7 +7,7 @@ export const canvasTextureCircle = (color: any) => {
   canvas.height = 10;
   const ctx = canvas.getContext('2d');
   if (ctx !== null) {
-    ctx.fillStyle = color;
+    ctx.fillStyle = `rgba(${color.r * 255}, ${color.g * 255}, ${color.b * 255}, ${color.alpha})`;
     ctx.arc(5, 5, 5, 0, 2 * Math.PI);
     ctx.fill();
   }

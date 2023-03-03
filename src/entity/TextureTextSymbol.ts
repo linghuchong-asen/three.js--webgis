@@ -5,7 +5,7 @@ import { Vector2 } from 'three/src/math/Vector2.js';
  * @Author: yangsen
  * @Date: 2022-08-11 14:27:31
  * @LastEditors: yangsen
- * @LastEditTime: 2022-08-22 13:27:40
+ * @LastEditTime: 2023-02-10 16:22:42
  */
 import { SpriteMaterial } from 'three/src/materials/SpriteMaterial.js';
 
@@ -176,13 +176,18 @@ class TextureTextSymbol extends Object3D {
     this.type = 'Sprite';
     this.isTextureTextSymbol = true;
 
+    /* 思路：在矩形上面做贴图 */
     if (_geometry === undefined) {
       _geometry = new BufferGeometry();
 
       const float32Array = new Float32Array([
-        -0.5, -0.5, 0, 0, 0, 0.5, -0.5, 0, 1, 0, 0.5, 0.5, 0, 1, 1, -0.5, 0.5, 0, 0, 1,
+        -0.5, -0.5, 0, 0, 0,
+        0.5, -0.5, 0, 1, 0,
+        0.5, 0.5, 0, 1, 1,
+        -0.5, 0.5, 0, 0, 1,
       ]);
 
+      /* "交叉存储" 表明多个类型的 attributes （例如，顶点位置、法向量、UV 和颜色值）被存储到一个队列中。 */
       const interleavedBuffer = new InterleavedBuffer(float32Array, 5);
 
       _geometry.setIndex([0, 1, 2, 0, 2, 3]);
