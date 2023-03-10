@@ -22,7 +22,7 @@ export const chunkArray = (params: chunkArrayParam) => {
 
 /* 获取jpg图片地址 */
 export const getJpgUrl = (url: string) => {
-  const { href } = new URL(`../src/assets/${url}.jpg`, import.meta.url);
+  const { href } = new URL(`./assets/${url}.jpg`, import.meta.url);
   return href;
 };
 /* 获取png图片地址 */

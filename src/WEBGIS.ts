@@ -4,7 +4,7 @@
  * @Author: yangsen
  * @Date: 2022-08-06 10:20:09
  * @LastEditors: yangsen
- * @LastEditTime: 2023-02-20 14:52:18
+ * @LastEditTime: 2023-03-06 11:06:39
  */
 
 export * from './core/Camera';
@@ -37,6 +37,8 @@ export * from './math/Vector3';
 export * from './math/Vector2';
 export * from './math/Color';
 export * from './math/Box3';
+export * from './math/Matrix3';
+export * from './math/Matrix4';
 
 export * from './annex/CatmullRomCurve3';
 

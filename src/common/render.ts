@@ -8,7 +8,7 @@ import { update } from '@tweenjs/tween.js';
 export const initRender = (renderer: WebGLRenderer, scene: Scene, camera: Camera, container: HTMLElement) => {
   // 渲染器配置
   renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.setClearColor(new Color(223, 230, 233), 1);
   // 渲染到页面
   container.appendChild(renderer.domElement);

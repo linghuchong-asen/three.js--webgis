@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2023-02-06 06:47:02
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-03 14:58:28
+ * @LastEditTime: 2023-03-06 18:13:46
  */
 import { ShaderMaterial, DoubleSide, MeshBasicMaterial } from 'three';
 import { translateColor } from '@/utils/utilFunction';
@@ -31,8 +31,8 @@ const objProxy = new Proxy(obj, handler); */
 
 class PolygonMaterial {
   material: any;
-  constructor(color: Color, height?: number) {
-    if (height === undefined) {
+  constructor(color: Color, height: number = 0) {
+    if (height === 0) {
       this.material = this.createMaterial(color);
     } else {
       this.material = this.createOpacityHeightMat(color, height);
@@ -40,7 +40,7 @@ class PolygonMaterial {
   }
 
   /* 创建具有高度透明度渐变材质 */
-  createOpacityHeightMat(
+  private createOpacityHeightMat(
     color: Color,
     height: number,
     option = {
@@ -93,7 +93,7 @@ class PolygonMaterial {
     return material;
   }
   /* 创建普通材质 */
-  createMaterial(color: Color) {
+  private createMaterial(color: Color) {
     const material = new MeshBasicMaterial({ color: translateColor(color), transparent: true });
     if (color.alpha !== 1) material.opacity = color.alpha;
     return material;

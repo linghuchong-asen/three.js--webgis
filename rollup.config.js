@@ -4,7 +4,7 @@
  * @Author: yangsen
  * @Date: 2022-07-28 16:53:28
  * @LastEditors: yangsen
- * @LastEditTime: 2023-01-30 10:32:26
+ * @LastEditTime: 2023-03-10 14:50:11
  */
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
@@ -14,6 +14,7 @@ import serve from 'rollup-plugin-serve';
 import livereload from 'rollup-plugin-livereload';
 import alias from '@rollup/plugin-alias';
 import dts from 'rollup-plugin-dts';
+import copy from "rollup-plugin-copy"
 const path = require('path');
 
 const extensions = ['.js', '.jsx', '.ts', '.tsx'];
@@ -48,6 +49,7 @@ let builds = [
           },
         ],
       }),
+
       terser(), // 生成环境更适合代码压缩
     ],
     external: [], // 不想被打包的依赖
@@ -78,6 +80,11 @@ let builds = [
             replacement: resolveDir('src'),
           },
         ],
+      }),
+      copy({
+        targets: [
+          {src: "./src/assets/*",dest:"build/assets"}
+        ]
       }),
       serve({
         open: true,

@@ -3,9 +3,10 @@
  * @Author: yangsen
  * @Date: 2023-02-06 08:43:21
  * @LastEditors: yangsen
- * @LastEditTime: 2023-02-07 16:37:31
+ * @LastEditTime: 2023-03-06 18:21:02
  */
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry';
+import { Vector3 } from 'three';
 
 class PolylineGeometry {
   geometry: any;
@@ -15,13 +16,14 @@ class PolylineGeometry {
     this.geometry = new LineGeometry();
     this.type = 'line2';
   }
-  setPath(path: number[]) {
-    const isRightLength = path.length % 3 === 0 ? true : false;
-    if (!isRightLength) {
-      throw new Error('传入线段路径点数组长度错误,需要是3的整数倍');
-    } else {
-      this.geometry.setPositions(path);
-    }
+  setPath(path: Vector3[]) {
+    const positionArr: number[] = [];
+    path.forEach((item) => {
+      positionArr.push(item.x);
+      positionArr.push(item.y);
+      positionArr.push(item.z);
+    });
+    this.geometry.setPositions(positionArr);
   }
 }
 export { PolylineGeometry };

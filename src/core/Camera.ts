@@ -4,11 +4,11 @@
  * @Author: yangsen
  * @Date: 2022-08-09 10:34:15
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-03 10:19:28
+ * @LastEditTime: 2023-03-06 16:20:57
  */
 import { PerspectiveCamera } from 'three';
 import { OrthographicCamera } from 'three';
-// import { controls } from '@/core/Viewer';
+import { controls } from '@/core/Viewer';
 
 class Camera extends PerspectiveCamera {
   constructor() {
@@ -17,6 +17,7 @@ class Camera extends PerspectiveCamera {
   readonly heading = this.rotation.z;
   readonly pitch = this.rotation.x;
   readonly roll = this.rotation.y;
+  readonly direction = controls.target;
   /* _heading = 0; // 偏航角，绕Z轴
   _pitch = 0; // 俯仰角，绕X轴
   _roll = 0; // 翻滚角，绕Y轴 

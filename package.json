@@ -38,6 +38,7 @@
 		"husky": "^8.0.0",
 		"lint-staged": "^13.0.3",
 		"rollup": "^2.77.2",
+		"rollup-plugin-copy": "^3.4.0",
 		"rollup-plugin-dts": "^4.2.2",
 		"rollup-plugin-livereload": "^2.0.5",
 		"rollup-plugin-serve": "^2.0.0",

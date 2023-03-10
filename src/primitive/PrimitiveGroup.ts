@@ -3,24 +3,25 @@
  * @Author: yangsen
  * @Date: 2023-01-05 18:21:33
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-03 15:38:11
+ * @LastEditTime: 2023-03-07 15:21:21
  */
 import { Object3D, Mesh, Points, Sprite } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { GLTFLoader } from '../loader/GLTFLoader';
+export const primitiveArr: any = [];
+
 class PrimitiveGroup extends Object3D {
   type: string;
   constructor() {
     super();
     this.type = 'primitiveGroup';
   }
-  private primitiveArr: any = [];
 
   append(obj: any) {
-    this.primitiveArr.push(obj);
+    primitiveArr.push(obj);
     /* PrimitiveGroup中既可以添加primitive又可添加自身 */
     if (obj.type === 'primitiveGroup') {
-      this.primitiveArr.forEach((item: any) => {
+      primitiveArr.forEach((item: any) => {
         this.appendFun(obj);
       });
     } else if (obj.type === 'primitive') {
@@ -28,32 +29,28 @@ class PrimitiveGroup extends Object3D {
     }
   }
 
-  getById(id: string) {
-    const primitive = this.primitiveArr.find((item: any) => item.id === id);
-    return primitive;
-  }
   private appendFun(obj: any, children = this.children) {
     // children是继承自Object3D属性
-    const geometryInstance = obj.geometryInstance;
-    const scale = geometryInstance.scale;
-    const translate = geometryInstance.translate;
-    const rotation = geometryInstance.rotation;
-    const heading = geometryInstance.heading;
-    const pitch = geometryInstance.pitch;
-    const roll = geometryInstance.roll;
-    const geometry = geometryInstance.geometry;
+    const geometryInstances = obj.geometryInstances;
+    const scale = geometryInstances.scale;
+    const translate = geometryInstances.translate;
+    const rotation = geometryInstances.rotation;
+    const heading = geometryInstances.heading;
+    const pitch = geometryInstances.pitch;
+    const roll = geometryInstances.roll;
+    const geometry = geometryInstances.geometry;
     const materialAppearance = obj.appearance; // MaterialAppearance层级
     const show = obj.show;
     const select = obj.select;
     const material = materialAppearance.material;
-    material.material.visible = show;
     if (geometry.type === 'modelGeometry') {
       const loader = new GLTFLoader();
       loader.load(
         material.url,
         // 加载成功
         function (gltf) {
-          geometryInstance.geometry.isModelReady = true;
+          geometryInstances.geometry.isModelReady = true;
+          gltf.scene.visible = show;
           // gis场景Z轴朝上，所以改变了camera的up属性；但是gltf格式还是Y轴向上，要经过旋转适配。
           // gltf.scene.rotateX(-Math.PI / 2);
           gltf.scene.rotateZ(-Math.PI);
@@ -82,6 +79,7 @@ class PrimitiveGroup extends Object3D {
       /* 线 */
       material.material.visible = show;
       const line2 = new Line2(geometry.geometry, material.material);
+      line2.visible = show;
       line2.name = obj.id;
       // @ts-ignore
       line2.select = select;
@@ -98,6 +96,7 @@ class PrimitiveGroup extends Object3D {
       /* 点 */
       material.material.visible = show;
       const point = new Points(geometry.geometry, material.material);
+      point.visible = show;
       point.name = obj.id;
       // @ts-ignore
       point.select = select;
@@ -110,6 +109,7 @@ class PrimitiveGroup extends Object3D {
       /* 文字 */
       material.material.visible = show;
       const label = new Sprite(material.material);
+      label.visible = show;
       label.name = obj.id;
       // @ts-ignore
       label.select = select;
@@ -124,6 +124,7 @@ class PrimitiveGroup extends Object3D {
       /* 广告牌 */
       material.material.visible = show;
       const billboard = new Sprite(material.material);
+      billboard.visible = show;
       billboard.name = obj.id;
       // @ts-ignore
       billboard.select = select;
@@ -138,6 +139,7 @@ class PrimitiveGroup extends Object3D {
       /* mesh */
       material.material.visible = show;
       const mesh = new Mesh(geometry.geometry, material.material);
+      mesh.visible = show;
       mesh.scale.set(scale.x, scale.y, scale.z);
       mesh.translateX(translate.x);
       mesh.translateY(translate.y);

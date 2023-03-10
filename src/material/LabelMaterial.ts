@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2023-02-13 10:01:07
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-02 20:57:23
+ * @LastEditTime: 2023-03-07 10:10:54
  */
 /* 文字内容，字体，大小,文字粗细，颜色；边框；，显示隐藏  |缩放，偏移量(用平移实现),位置，旋转 */
 import { createCanvasText } from '@/common/canvasText';
@@ -24,8 +24,8 @@ class LabelMaterial {
   constructor() {
     this.type = 'labelMaterial';
     this._font = undefined;
-    this._isFill = undefined;
-    this._isOutline = undefined;
+    this._isFill = true;
+    this._isOutline = false;
     this._fillColor = undefined;
     this._outlineColor = undefined;
     this._show = true;
@@ -42,7 +42,10 @@ class LabelMaterial {
     });
   }
   // 文字内容
-  set text(value: string) {
+  get text() {
+    return this._text;
+  }
+  set text(value: string | undefined) {
     this._text = value;
     this.material = new SpriteMaterial({
       map: createCanvasText({
@@ -57,7 +60,10 @@ class LabelMaterial {
     });
   }
   // 文字样式
-  set font(value: string) {
+  get font() {
+    return this._font;
+  }
+  set font(value: string | undefined) {
     this._font = value;
     this.material = new SpriteMaterial({
       map: createCanvasText({
@@ -72,7 +78,10 @@ class LabelMaterial {
     });
   }
   // 文字颜色
-  set fillColor(value: Color) {
+  get fillColor() {
+    return this._fillColor;
+  }
+  set fillColor(value: Color | undefined) {
     this._fillColor = value;
     this.material = new SpriteMaterial({
       map: createCanvasText({
@@ -87,7 +96,10 @@ class LabelMaterial {
     });
   }
   // 边框颜色
-  set outlineColor(value: Color) {
+  get outlineColor() {
+    return this._outlineColor;
+  }
+  set outlineColor(value: Color | undefined) {
     this._outlineColor = value;
     this.material = new SpriteMaterial({
       map: createCanvasText({
@@ -102,7 +114,10 @@ class LabelMaterial {
     });
   }
   // 文字是否填充
-  set isFill(value: boolean) {
+  get isFill() {
+    return this._isFill;
+  }
+  set isFill(value: boolean | undefined) {
     this._isFill = value;
     this.material = new SpriteMaterial({
       map: createCanvasText({
@@ -117,7 +132,10 @@ class LabelMaterial {
     });
   }
   // 文字是否有边框
-  set isOutline(value: boolean) {
+  get isOutline() {
+    return this._isOutline;
+  }
+  set isOutline(value: boolean | undefined) {
     this._isOutline = value;
     this.material = new SpriteMaterial({
       map: createCanvasText({
@@ -132,7 +150,10 @@ class LabelMaterial {
     });
   }
   // 文字边框宽度
-  set outlineWidth(value: number) {
+  get outlineWidth() {
+    return this._outlineWidth;
+  }
+  set outlineWidth(value: number | undefined) {
     this._outlineWidth = value;
     this.material = new SpriteMaterial({
       map: createCanvasText({
