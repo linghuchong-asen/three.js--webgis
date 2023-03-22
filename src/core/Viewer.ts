@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2022-12-19 10:38:45
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-10 21:28:39
+ * @LastEditTime: 2023-03-22 11:47:53
  */
 
 import { Scene } from './Scene';
@@ -29,6 +29,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
 import { SphereGeometry } from 'three';
 import { primitiveArr } from '@/primitive/PrimitiveGroup';
+import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 
 const scene = new Scene();
 const renderer = new WebGLRenderer();
@@ -50,9 +51,10 @@ scene.camera.up.set(0, 0, 1);
 // scene.camera.position.set(0, -10, 0);
 const controls = new OrbitControls(scene.camera, renderer.domElement);
 controls.addEventListener('change', () => {
-  // renderer.render(scene, scene.camera);
   composer.render();
 });
+/* CSS2D渲染器 */
+const labelRenderer = new CSS2DRenderer();
 
 class Viewer {
   container: HTMLElement | null;
@@ -67,7 +69,7 @@ class Viewer {
     if (this.container !== null) {
       this.scene.camera.up.set(0, 0, 1);
       // 初始化渲染器
-      initRender(this.renderer, this.scene, this.camera, this.container);
+      initRender(this.renderer, this.container);
     } else {
       throw new Error('不能根据id获取到正确的DOM元素');
     }
@@ -83,6 +85,7 @@ class Viewer {
   _axesShow = true;
   _axesLength = 10;
   _groundColor = new Color(87, 96, 111);
+  controls = controls;
   // 场景中增加一个地面
   private groundGeometry = new PlaneGeometry(1000, 1000);
   private groundMaterial = new MeshBasicMaterial({ color: this._groundColor, side: 2, transparent: true });
@@ -94,7 +97,7 @@ class Viewer {
     this.ground.name = 'ground';
     this.ground.position.set(0, 0, -1);
     this.scene.add(this.ground);
-    this.scene.light.position.set(1, 1, 1);
+    this.scene.light.position.set(10000, 10000, 10000);
     this.scene.add(this.scene.light);
     if (this._axesShow) this.scene.add(this.axesHelper);
     this.scene.camera.position.set(70, 70, 70);
@@ -195,7 +198,7 @@ class Viewer {
   }
 
   /* 相机飞行,第一个参数是相机要飞行到的目标对象 */
-  flyTo(result: any, options?: { startTarget?: any; during?: number; mode?: string }) {
+  flyTo(result: any, options?: { startTarget?: any; during?: number; mode?: string; cameraPosition: Vector3 }) {
     const object = this.scene.getObjectByName(result.id);
     const box3 = new Box3();
     if (object === undefined) {
@@ -217,9 +220,9 @@ class Viewer {
       } else {
         /* 如果指定startTarget，可以不是从当前相机看向的物体开始飞行 */
         current = {
-          x: options?.startTarget.x + 3,
-          y: options?.startTarget.y + 3,
-          z: options?.startTarget.z + 15,
+          x: options?.startTarget.x + (options.cameraPosition === undefined ? 5 : options.cameraPosition.x),
+          y: options?.startTarget.y + (options.cameraPosition === undefined ? 5 : options.cameraPosition.x),
+          z: options?.startTarget.z + (options.cameraPosition === undefined ? 20 : options.cameraPosition.x),
           x1: options?.startTarget.x,
           y1: options?.startTarget.y,
           z1: options?.startTarget.z,
@@ -227,9 +230,9 @@ class Viewer {
       }
 
       const destination = {
-        x: objPosition.x + 3,
-        y: objPosition.y + 3,
-        z: objPosition.z + 15,
+        x: objPosition.x + (options?.cameraPosition === undefined ? 5 : options.cameraPosition.x),
+        y: objPosition.y + (options?.cameraPosition === undefined ? 5 : options.cameraPosition.x),
+        z: objPosition.z + (options?.cameraPosition === undefined ? 20 : options.cameraPosition.x),
         x1: objPosition.x,
         y1: objPosition.y,
         z1: objPosition.z,
@@ -305,4 +308,4 @@ class Viewer {
   }
 }
 
-export { Viewer, scene, renderer, controls, composer };
+export { Viewer, scene, renderer, controls, composer, labelRenderer };

@@ -27,7 +27,7 @@ export const getJpgUrl = (url: string) => {
 };
 /* 获取png图片地址 */
 export const getPngUrl = (url: string) => {
-  const { href } = new URL(`../src/assets/${url}.png`, import.meta.url);
+  const { href } = new URL(`./assets/${url}.png`, import.meta.url);
   return href;
 };
 

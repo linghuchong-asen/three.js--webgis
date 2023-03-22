@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2023-01-05 18:21:33
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-07 15:21:21
+ * @LastEditTime: 2023-03-22 11:03:19
  */
 import { Object3D, Mesh, Points, Sprite } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
@@ -38,6 +38,7 @@ class PrimitiveGroup extends Object3D {
     const heading = geometryInstances.heading;
     const pitch = geometryInstances.pitch;
     const roll = geometryInstances.roll;
+    const matrix = geometryInstances.matrix;
     const geometry = geometryInstances.geometry;
     const materialAppearance = obj.appearance; // MaterialAppearance层级
     const show = obj.show;
@@ -66,6 +67,9 @@ class PrimitiveGroup extends Object3D {
           gltf.scene.rotateZ(heading);
           gltf.scene.rotateX(pitch);
           gltf.scene.rotateY(roll);
+          if (matrix !== undefined) {
+            gltf.scene.applyMatrix4(matrix);
+          }
           children.push(gltf.scene);
         },
         // 模型加载中
@@ -109,6 +113,7 @@ class PrimitiveGroup extends Object3D {
       /* 文字 */
       material.material.visible = show;
       const label = new Sprite(material.material);
+      console.log(material.material.map);
       label.visible = show;
       label.name = obj.id;
       // @ts-ignore
@@ -123,18 +128,32 @@ class PrimitiveGroup extends Object3D {
     } else if (geometry.type === 'billboardGeometry') {
       /* 广告牌 */
       material.material.visible = show;
-      const billboard = new Sprite(material.material);
+      const billboard = new Sprite(material.material); // 广告牌图片部分
       billboard.visible = show;
       billboard.name = obj.id;
       // @ts-ignore
       billboard.select = select;
+      const billboardText = new Sprite(material.textMaterial.material); // 广告牌文字部分
+      billboardText.visible = show;
+      // @ts-ignore
+      billboardText.select = select;
       const position = geometry.position;
       billboard.position.set(position.x, position.y, position.z);
       billboard.scale.set(scale.x, scale.y, scale.z);
       billboard.translateX(translate.x);
       billboard.translateY(translate.y);
       billboard.translateZ(translate.z);
+      if (matrix !== undefined) {
+        billboard.applyMatrix4(matrix);
+      }
+      console.log(material.textMaterial.material.map);
+      billboardText.position.set(position.x, position.y, position.z);
+      billboardText.scale.set(scale.x, scale.y, scale.z);
+      billboardText.translateX(translate.x);
+      billboardText.translateY(translate.y);
+      billboardText.translateZ(translate.z - billboard.scale.z - billboardText.scale.z / 2);
       children.push(billboard);
+      children.push(billboardText);
     } else {
       /* mesh */
       material.material.visible = show;
