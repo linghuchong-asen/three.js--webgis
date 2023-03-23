@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2023-02-14 17:54:55
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-22 10:13:03
+ * @LastEditTime: 2023-03-23 10:17:22
  */
 import { SpriteMaterial, TextureLoader } from 'three';
 import { LabelMaterial } from './LabelMaterial';
@@ -20,7 +20,6 @@ class BillboardMaterial {
     this._image = '';
     this.material = new SpriteMaterial();
     this.material.alphaTest = 1;
-    // this.material.sizeAttenuation = false;
     this.textMaterial = new LabelMaterial();
   }
   // 图片

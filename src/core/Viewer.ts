@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2022-12-19 10:38:45
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-22 11:47:53
+ * @LastEditTime: 2023-03-22 20:34:45
  */
 
 import { Scene } from './Scene';
@@ -46,15 +46,15 @@ outlinePass.edgeThickness = 3; // 边缘厚度，默认 1.0
 outlinePass.edgeGlow = 1; // 边缘流， 默认 0.0
 outlinePass.pulsePeriod = 2; // 闪烁频率 ，默认 0，值越大频率越低。
 composer.addPass(outlinePass);
+/* CSS3D渲染器 */
+const labelRenderer = new CSS2DRenderer();
 // 视锥控制
 scene.camera.up.set(0, 0, 1);
 // scene.camera.position.set(0, -10, 0);
-const controls = new OrbitControls(scene.camera, renderer.domElement);
+const controls = new OrbitControls(scene.camera, labelRenderer.domElement);
 controls.addEventListener('change', () => {
   composer.render();
 });
-/* CSS2D渲染器 */
-const labelRenderer = new CSS2DRenderer();
 
 class Viewer {
   container: HTMLElement | null;
@@ -69,7 +69,7 @@ class Viewer {
     if (this.container !== null) {
       this.scene.camera.up.set(0, 0, 1);
       // 初始化渲染器
-      initRender(this.renderer, this.container);
+      initRender(this.container);
     } else {
       throw new Error('不能根据id获取到正确的DOM元素');
     }
@@ -78,7 +78,6 @@ class Viewer {
     composerRenderLoop();
   }
 
-  private renderer = renderer;
   scene = scene;
   camera = this.scene.camera;
   entities = new EntityGroup();

@@ -3,11 +3,12 @@
  * @Author: yangsen
  * @Date: 2023-01-05 18:21:33
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-22 11:03:19
+ * @LastEditTime: 2023-03-23 10:46:26
  */
 import { Object3D, Mesh, Points, Sprite } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { GLTFLoader } from '../loader/GLTFLoader';
+import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 export const primitiveArr: any = [];
 
 class PrimitiveGroup extends Object3D {
@@ -55,7 +56,11 @@ class PrimitiveGroup extends Object3D {
           // gis场景Z轴朝上，所以改变了camera的up属性；但是gltf格式还是Y轴向上，要经过旋转适配。
           // gltf.scene.rotateX(-Math.PI / 2);
           gltf.scene.rotateZ(-Math.PI);
-          gltf.scene.position.set(geometry.position.x, geometry.position.y, geometry.position.z);
+          gltf.scene.position.set(
+            geometry.position.x,
+            geometry.position.y,
+            geometry.position.z,
+          );
           gltf.scene.name = obj.id;
           // @ts-ignore
           gltf.select = select;
@@ -129,7 +134,7 @@ class PrimitiveGroup extends Object3D {
       /* 广告牌 */
       material.material.visible = show;
       const billboard = new Sprite(material.material); // 广告牌图片部分
-      billboard.visible = show;
+      billboard.visible = false;
       billboard.name = obj.id;
       // @ts-ignore
       billboard.select = select;
@@ -146,14 +151,53 @@ class PrimitiveGroup extends Object3D {
       if (matrix !== undefined) {
         billboard.applyMatrix4(matrix);
       }
-      console.log(material.textMaterial.material.map);
-      billboardText.position.set(position.x, position.y, position.z);
-      billboardText.scale.set(scale.x, scale.y, scale.z);
-      billboardText.translateX(translate.x);
-      billboardText.translateY(translate.y);
-      billboardText.translateZ(translate.z - billboard.scale.z - billboardText.scale.z / 2);
+
+      // 使用CSS2D渲染广告牌内容
+      const billboardDiv = document.createElement('div');
+      const pictureDiv = document.createElement('div');
+      billboardDiv.appendChild(pictureDiv);
+      const labelDiv = document.createElement('div');
+      billboardDiv.appendChild(labelDiv);
+      pictureDiv.style.backgroundImage = `url(${material.image})`;
+      pictureDiv.style.backgroundRepeat = 'no-repeat';
+      pictureDiv.style.backgroundSize = 'cover';
+      pictureDiv.style.backgroundPosition = 'center center';
+      pictureDiv.style.height = '24px';
+      pictureDiv.style.width = '24px';
+      pictureDiv.style.margin = '0 auto';
+      labelDiv.className = 'label';
+      labelDiv.textContent = `${material.text}`;
+      labelDiv.style.textAlign = 'center';
+      labelDiv.style.color = `rgb(${material.textFillColor.rValue},${material.textFillColor.gValue},${material.textFillColor.bValue})`;
+      labelDiv.style.fontSize = `${material.textFontSize}`;
+      labelDiv.style.textShadow = `${material.textOutlineWidth}px -${
+        material.textOutlineWidth
+      }px 0 rbg(${
+        (material.textOutlineColor.rValue,
+        material.textOutlineColor.gValue,
+        material.textOutlineColor.bValue)
+      }), ${material.textOutlineWidth}px -${
+        material.textOutlineWidth
+      }px 0 rbg(${
+        (material.textOutlineColor.rValue,
+        material.textOutlineColor.gValue,
+        material.textOutlineColor.bValue)
+      }), -${material.textOutlineWidth}px ${
+        material.textOutlineWidth
+      }px 0 rbg(${
+        (material.textOutlineColor.rValue,
+        material.textOutlineColor.gValue,
+        material.textOutlineColor.bValue)
+      }), ${material.textOutlineWidth}px ${material.textOutlineWidth}px 0 rbg(${
+        (material.textOutlineColor.rValue,
+        material.textOutlineColor.gValue,
+        material.textOutlineColor.bValue)
+      });`;
+
+      const earthLabel = new CSS2DObject(billboardDiv);
+      earthLabel.position.set(0, 0, 0);
+      billboard.add(earthLabel);
       children.push(billboard);
-      children.push(billboardText);
     } else {
       /* mesh */
       material.material.visible = show;
