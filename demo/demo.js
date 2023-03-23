@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2023-01-10 18:05:40
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-22 10:51:03
+ * @LastEditTime: 2023-03-23 13:40:40
  */
 
 import * as Webgis from '../build/bundle.module.js';
@@ -67,7 +67,10 @@ const positionArr = [
 const polygonGeometry = new Webgis.PolygonGeometry(positionArr);
 // 设置拉伸高度
 polygonGeometry.stretch(50);
-const polygonMaterial = new Webgis.PolygonMaterial(new Webgis.Color(117, 16, 99, 0.5), 50);
+const polygonMaterial = new Webgis.PolygonMaterial(
+  new Webgis.Color(117, 16, 99, 0.5),
+  50,
+);
 viewer.scene.primitives.append(
   new Webgis.Primitive({
     geometryInstances: new Webgis.GeometryInstance({
@@ -111,7 +114,9 @@ const wallPositionFluid = [
 ];
 const wallGeometryFluid = new Webgis.WallGeometry(wallPositionFluid);
 wallGeometryFluid.stretch(50);
-const wallMaterialFluid = new Webgis.WallMaterial(new Webgis.Color(60, 158, 78, 0.6));
+const wallMaterialFluid = new Webgis.WallMaterial(
+  new Webgis.Color(60, 158, 78, 0.6),
+);
 wallMaterialFluid.isFluid = true;
 viewer.scene.primitives.append(
   new Webgis.Primitive({
@@ -128,7 +133,11 @@ viewer.scene.primitives.append(
 /* 添加线 */
 const polylineGeometry = new Webgis.PolylineGeometry();
 // 设置路径点
-const polyline = [new Webgis.Vector3(-10, 0, 10), new Webgis.Vector3(10, 10, 0), new Webgis.Vector3(10, 0, 0)];
+const polyline = [
+  new Webgis.Vector3(-10, 0, 10),
+  new Webgis.Vector3(10, 10, 0),
+  new Webgis.Vector3(10, 0, 0),
+];
 polylineGeometry.setPath(polyline);
 const polylineMaterial = new Webgis.PolylineMaterial([147, 172, 130]);
 // 设置线宽
@@ -173,12 +182,12 @@ billboardGeometry.position = new Webgis.Vector3(-30, 10, 10);
 const billboardMaterial = new Webgis.BillboardMaterial();
 // 贴图
 billboardMaterial.image = 'http://192.168.0.100:8810/1.png';
-billboardMaterial.text = '广告牌文字';
+billboardMaterial.text = '雷达1号';
 viewer.scene.primitives.append(
   new Webgis.Primitive({
     geometryInstances: new Webgis.GeometryInstance({
       geometry: billboardGeometry,
-      scale: new Webgis.Vector3(1, 1, 1),
+      scale: new Webgis.Vector3(0.6, 0.6, 0.6),
     }),
     appearance: new Webgis.MaterialAppearance({
       material: billboardMaterial,
@@ -195,7 +204,7 @@ const labelMaterial = new Webgis.LabelMaterial();
 // 文字内容
 labelMaterial.text = 'Label文字';
 // 粗细 大小 字体
-labelMaterial.fontSize = '200px';
+labelMaterial.fontSize = 200;
 // 颜色
 labelMaterial.fillColor = new Webgis.Color(109, 139, 241, 1);
 // 添加边框

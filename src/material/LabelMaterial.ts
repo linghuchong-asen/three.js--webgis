@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2023-02-13 10:01:07
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-21 21:35:49
+ * @LastEditTime: 2023-03-23 13:20:24
  */
 /* 文字内容，字体，大小,文字粗细，颜色；边框；，显示隐藏  |缩放，偏移量(用平移实现),位置，旋转 */
 import { createCanvasText } from '@/common/canvasText';
@@ -14,7 +14,7 @@ class LabelMaterial {
   type: string;
   material: any;
   _text: string | undefined;
-  _fontSize: string | undefined;
+  _fontSize: number | undefined;
   _isFill: boolean | undefined;
   _isOutline: boolean | undefined;
   _fillColor: Color | undefined;
@@ -67,7 +67,7 @@ class LabelMaterial {
   get fontSize() {
     return this._fontSize;
   }
-  set fontSize(value: string | undefined) {
+  set fontSize(value: number | undefined) {
     this._fontSize = value;
     this.material = new SpriteMaterial({
       map: createCanvasText({

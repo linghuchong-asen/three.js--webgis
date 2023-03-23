@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2022-12-19 10:38:45
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-22 20:34:45
+ * @LastEditTime: 2023-03-23 13:31:22
  */
 
 import { Scene } from './Scene';
@@ -38,7 +38,11 @@ const composer = new EffectComposer(renderer); // 初始化效果组合器,后�
 const renderPass = new RenderPass(scene, scene.camera);
 composer.addPass(renderPass);
 // OutlinePass通道可以为场景中被添加到通道中的物体边缘添加一个描边发光效果。
-const outlinePass = new OutlinePass(new Vector2(window.innerWidth, window.innerHeight), scene, scene.camera);
+const outlinePass = new OutlinePass(
+  new Vector2(window.innerWidth, window.innerHeight),
+  scene,
+  scene.camera,
+);
 outlinePass.visibleEdgeColor.set('#b5005e'); // 边缘可见部分发光颜色，默认 #FFFFFF。
 outlinePass.hiddenEdgeColor.set('#b50003'); // 边缘遮挡部分发光颜色，默认 #190A05。
 outlinePass.edgeStrength = 5; // 边缘强度 ，默认 3.0
@@ -62,9 +66,9 @@ class Viewer {
   constructor(id: string) {
     this.container = document.getElementById(id);
     this.initScene();
+    this.setSkyBox(); // 设置天空盒
     // 初始向scene中添加图元组
     this.scene.add(this.scene.primitives);
-    this.setSkyBox(); // 设置天空盒
 
     if (this.container !== null) {
       this.scene.camera.up.set(0, 0, 1);
@@ -87,7 +91,11 @@ class Viewer {
   controls = controls;
   // 场景中增加一个地面
   private groundGeometry = new PlaneGeometry(1000, 1000);
-  private groundMaterial = new MeshBasicMaterial({ color: this._groundColor, side: 2, transparent: true });
+  private groundMaterial = new MeshBasicMaterial({
+    color: this._groundColor,
+    side: 2,
+    transparent: true,
+  });
   private ground = new Mesh(this.groundGeometry, this.groundMaterial);
   private axesHelper = new AxesHelper(this._axesLength);
 
@@ -120,7 +128,11 @@ class Viewer {
     return this._axesLength;
   }
   set axesLength(value: number) {
-    this.axesHelper.scale.set(value / this._axesLength, value / this._axesLength, value / this._axesLength);
+    this.axesHelper.scale.set(
+      value / this._axesLength,
+      value / this._axesLength,
+      value / this._axesLength,
+    );
     this._axesLength = value;
   }
 
@@ -135,7 +147,14 @@ class Viewer {
   };
   setSkyBox(source: Sources = this.skyBoxSource, show: boolean = true) {
     const loader = new CubeTextureLoader();
-    const texture = loader.load([source.px, source.mx, source.py, source.my, source.pz, source.mz]);
+    const texture = loader.load([
+      source.px,
+      source.mx,
+      source.py,
+      source.my,
+      source.pz,
+      source.mz,
+    ]);
     if (show) {
       this.scene.background = texture;
     } else {
@@ -150,11 +169,15 @@ class Viewer {
     windowPosition.y = -(position.y / window.innerHeight) * 2 + 1;
     const raycaster = new Raycaster();
     raycaster.setFromCamera(windowPosition, this.scene.camera);
-    const objArr = raycaster.intersectObject(this.scene).map((item) => item.object);
+    const objArr = raycaster
+      .intersectObject(this.scene)
+      .map((item) => item.object);
     // @ts-ignore
     const allowSelect = objArr.filter((item) => item.select === true);
     const primitives = allowSelect.map((item) => {
-      const primitive = primitiveArr.find((value: any) => value.id === item.name);
+      const primitive = primitiveArr.find(
+        (value: any) => value.id === item.name,
+      );
       return primitive;
     });
     const result = primitives.length === 0 ? null : primitives;
@@ -168,11 +191,15 @@ class Viewer {
     windowPosition.y = -(position.y / window.innerHeight) * 2 + 1;
     const raycaster = new Raycaster();
     raycaster.setFromCamera(windowPosition, this.scene.camera);
-    const objArr = raycaster.intersectObject(this.scene).map((item) => item.object);
+    const objArr = raycaster
+      .intersectObject(this.scene)
+      .map((item) => item.object);
     // @ts-ignore
     const allowSelect = objArr.filter((item) => item.select === true);
     const primitives = allowSelect.map((item) => {
-      const primitive = primitiveArr.find((value: any) => value.id === item.name);
+      const primitive = primitiveArr.find(
+        (value: any) => value.id === item.name,
+      );
       return primitive;
     });
     const result = primitives.length === 0 ? null : primitives[0];
@@ -197,7 +224,15 @@ class Viewer {
   }
 
   /* 相机飞行,第一个参数是相机要飞行到的目标对象 */
-  flyTo(result: any, options?: { startTarget?: any; during?: number; mode?: string; cameraPosition: Vector3 }) {
+  flyTo(
+    result: any,
+    options?: {
+      startTarget?: any;
+      during?: number;
+      mode?: string;
+      cameraPosition: Vector3;
+    },
+  ) {
     const object = this.scene.getObjectByName(result.id);
     const box3 = new Box3();
     if (object === undefined) {
@@ -219,9 +254,21 @@ class Viewer {
       } else {
         /* 如果指定startTarget，可以不是从当前相机看向的物体开始飞行 */
         current = {
-          x: options?.startTarget.x + (options.cameraPosition === undefined ? 5 : options.cameraPosition.x),
-          y: options?.startTarget.y + (options.cameraPosition === undefined ? 5 : options.cameraPosition.x),
-          z: options?.startTarget.z + (options.cameraPosition === undefined ? 20 : options.cameraPosition.x),
+          x:
+            options?.startTarget.x +
+            (options.cameraPosition === undefined
+              ? 5
+              : options.cameraPosition.x),
+          y:
+            options?.startTarget.y +
+            (options.cameraPosition === undefined
+              ? 5
+              : options.cameraPosition.x),
+          z:
+            options?.startTarget.z +
+            (options.cameraPosition === undefined
+              ? 20
+              : options.cameraPosition.x),
           x1: options?.startTarget.x,
           y1: options?.startTarget.y,
           z1: options?.startTarget.z,
@@ -229,9 +276,21 @@ class Viewer {
       }
 
       const destination = {
-        x: objPosition.x + (options?.cameraPosition === undefined ? 5 : options.cameraPosition.x),
-        y: objPosition.y + (options?.cameraPosition === undefined ? 5 : options.cameraPosition.x),
-        z: objPosition.z + (options?.cameraPosition === undefined ? 20 : options.cameraPosition.x),
+        x:
+          objPosition.x +
+          (options?.cameraPosition === undefined
+            ? 5
+            : options.cameraPosition.x),
+        y:
+          objPosition.y +
+          (options?.cameraPosition === undefined
+            ? 5
+            : options.cameraPosition.x),
+        z:
+          objPosition.z +
+          (options?.cameraPosition === undefined
+            ? 20
+            : options.cameraPosition.x),
         x1: objPosition.x,
         y1: objPosition.y,
         z1: objPosition.z,
@@ -243,7 +302,11 @@ class Viewer {
       } */
       tween.easing(Easing.Quadratic.InOut);
       tween.onComplete(() => {
-        const temp = new Vector3(destination.x1, destination.y1, destination.z1);
+        const temp = new Vector3(
+          destination.x1,
+          destination.y1,
+          destination.z1,
+        );
         controls.target = temp;
       });
       tween.onUpdate(() => {
@@ -251,7 +314,10 @@ class Viewer {
         this.camera.lookAt(current.x1, current.y1, current.z1);
       });
 
-      tween.to(destination, options?.during === undefined ? 1000 : options?.during);
+      tween.to(
+        destination,
+        options?.during === undefined ? 1000 : options?.during,
+      );
       tween.start();
     }
   }
@@ -280,7 +346,11 @@ class Viewer {
           opacity: 0.3,
         });
         const cylinder = new Mesh(cylinderGeometry, cylinderMaterial);
-        cylinder.position.set(item.position.x, item.position.y, item.position.z);
+        cylinder.position.set(
+          item.position.x,
+          item.position.y,
+          item.position.z,
+        );
         this.scene.add(cylinder);
       } else if (item.type === 'Points') {
         pointsArr.push(item);

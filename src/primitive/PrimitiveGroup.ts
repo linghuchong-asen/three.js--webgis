@@ -3,12 +3,13 @@
  * @Author: yangsen
  * @Date: 2023-01-05 18:21:33
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-23 10:46:26
+ * @LastEditTime: 2023-03-23 13:31:49
  */
 import { Object3D, Mesh, Points, Sprite } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { GLTFLoader } from '../loader/GLTFLoader';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import { createCanvas } from '@/common/canvasText';
 export const primitiveArr: any = [];
 
 class PrimitiveGroup extends Object3D {
@@ -118,7 +119,6 @@ class PrimitiveGroup extends Object3D {
       /* 文字 */
       material.material.visible = show;
       const label = new Sprite(material.material);
-      console.log(material.material.map);
       label.visible = show;
       label.name = obj.id;
       // @ts-ignore
@@ -156,43 +156,25 @@ class PrimitiveGroup extends Object3D {
       const billboardDiv = document.createElement('div');
       const pictureDiv = document.createElement('div');
       billboardDiv.appendChild(pictureDiv);
-      const labelDiv = document.createElement('div');
-      billboardDiv.appendChild(labelDiv);
       pictureDiv.style.backgroundImage = `url(${material.image})`;
       pictureDiv.style.backgroundRepeat = 'no-repeat';
       pictureDiv.style.backgroundSize = 'cover';
       pictureDiv.style.backgroundPosition = 'center center';
-      pictureDiv.style.height = '24px';
-      pictureDiv.style.width = '24px';
+      pictureDiv.style.height = `${48 * scale.x}px`;
+      pictureDiv.style.width = `${48 * scale.y}px`;
       pictureDiv.style.margin = '0 auto';
-      labelDiv.className = 'label';
-      labelDiv.textContent = `${material.text}`;
-      labelDiv.style.textAlign = 'center';
-      labelDiv.style.color = `rgb(${material.textFillColor.rValue},${material.textFillColor.gValue},${material.textFillColor.bValue})`;
-      labelDiv.style.fontSize = `${material.textFontSize}`;
-      labelDiv.style.textShadow = `${material.textOutlineWidth}px -${
-        material.textOutlineWidth
-      }px 0 rbg(${
-        (material.textOutlineColor.rValue,
-        material.textOutlineColor.gValue,
-        material.textOutlineColor.bValue)
-      }), ${material.textOutlineWidth}px -${
-        material.textOutlineWidth
-      }px 0 rbg(${
-        (material.textOutlineColor.rValue,
-        material.textOutlineColor.gValue,
-        material.textOutlineColor.bValue)
-      }), -${material.textOutlineWidth}px ${
-        material.textOutlineWidth
-      }px 0 rbg(${
-        (material.textOutlineColor.rValue,
-        material.textOutlineColor.gValue,
-        material.textOutlineColor.bValue)
-      }), ${material.textOutlineWidth}px ${material.textOutlineWidth}px 0 rbg(${
-        (material.textOutlineColor.rValue,
-        material.textOutlineColor.gValue,
-        material.textOutlineColor.bValue)
-      });`;
+      billboardDiv.appendChild(
+        createCanvas({
+          text: material.text,
+          fontSize: material.textFontSize,
+          fillColor: material.textFillColor,
+          outlineColor: material.textOutlineColor,
+          isFill: material.textIsFill,
+          isOutline: material.textIsOutline,
+          outlineWidth: material.textOutlineWidth,
+          fontScale: scale.x,
+        }),
+      );
 
       const earthLabel = new CSS2DObject(billboardDiv);
       earthLabel.position.set(0, 0, 0);
