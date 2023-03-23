@@ -39,6 +39,7 @@ export * from './math/Color';
 export * from './math/Box3';
 export * from './math/Matrix3';
 export * from './math/Matrix4';
+export * from './math/Cartesian3';
 
 export * from './annex/CatmullRomCurve3';
 
