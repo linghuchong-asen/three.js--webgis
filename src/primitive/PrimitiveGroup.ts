@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2023-01-05 18:21:33
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-26 08:28:50
+ * @LastEditTime: 2023-03-26 14:15:18
  */
 import { Object3D, Mesh, Points, Sprite } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
@@ -119,16 +119,33 @@ class PrimitiveGroup extends Object3D {
       /* 文字 */
       material.material.visible = show;
       const label = new Sprite(material.material);
-      label.visible = show;
+      label.visible = false;
       label.name = obj.id;
       // @ts-ignore
       label.select = select;
       const position = geometry.position;
       label.position.set(position.x, position.y, position.z);
-      label.scale.set(scale.x, scale.y, scale.z);
+      /* label.scale.set(scale.x, scale.y, scale.z);
       label.translateX(translate.x);
       label.translateY(translate.y);
-      label.translateZ(translate.z);
+      label.translateZ(translate.z); */
+      const textDiv = document.createElement('div');
+      console.log(material.fontSize);
+      textDiv.appendChild(
+        createCanvas({
+          text: material.text,
+          fontSize: material.fontSize,
+          fillColor: material.fillColor,
+          outlineColor: material.outlineColor,
+          isFill: material.isFill,
+          isOutline: material.isOutline,
+          outlineWidth: material.outlineWidth,
+          fontScale: scale.x,
+        }),
+      );
+      const text2D = new CSS2DObject(textDiv);
+      text2D.position.set(0, 0, 0);
+      label.add(text2D);
       children.push(label);
     } else if (geometry.type === 'billboardGeometry') {
       /* 广告牌 */
@@ -176,15 +193,13 @@ class PrimitiveGroup extends Object3D {
         }),
       );
 
-      const earthLabel = new CSS2DObject(billboardDiv);
-      earthLabel.position.set(0, 0, 0);
-      billboard.add(earthLabel);
+      const billboardLabel = new CSS2DObject(billboardDiv);
+      billboardLabel.position.set(0, 0, 0);
+      billboard.add(billboardLabel);
       children.push(billboard);
     } else {
       /* mesh */
       material.material.visible = show;
-      console.log(geometry.geometry);
-      console.log(material.material);
       const mesh = new Mesh(geometry.geometry, material.material);
       mesh.visible = show;
       mesh.scale.set(scale.x, scale.y, scale.z);

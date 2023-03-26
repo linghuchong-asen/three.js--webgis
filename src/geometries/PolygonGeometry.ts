@@ -3,17 +3,9 @@
  * @Author: yangsen
  * @Date: 2023-01-29 21:10:03
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-26 11:26:58
+ * @LastEditTime: 2023-03-26 14:05:14
  */
-import {
-  Shape,
-  ShapeGeometry,
-  ExtrudeBufferGeometry,
-  Path,
-  Vector2,
-  BufferGeometry,
-  Vector3,
-} from 'three';
+import { Shape, Path, Vector2, BufferGeometry, Vector3 } from 'three';
 
 class PolygonGeometry {
   positionArr: Vector3[];
@@ -23,7 +15,7 @@ class PolygonGeometry {
 
   constructor(positionArr: Vector3[]) {
     this.positionArr = positionArr;
-    // this.createShape();/*  */
+    this.createGeometry();
     this.height = 0;
   }
   type = 'polygonGeometry';
@@ -46,16 +38,13 @@ class PolygonGeometry {
   }
   // 设置厚度
   stretch(thickness: number) {
-    console.log(this.positionArr);
     const positionArrTranslate: Vector3[] = []; // 路径点沿法线平移指定路径后的点(顶面路径点)
     const vector1 = new Vector3(0, 0, 0);
     const vector2 = new Vector3(0, 0, 0);
     vector1.subVectors(this.positionArr[1], this.positionArr[0]);
     vector2.subVectors(this.positionArr[2], this.positionArr[0]);
-    console.log(vector1, vector2);
     const normal = new Vector3(); // 法线
     normal.crossVectors(vector1, vector2).normalize().multiplyScalar(thickness);
-    console.log('normal:', normal);
     this.positionArr.forEach((item) => {
       positionArrTranslate.push(new Vector3().copy(item).add(normal));
     });
@@ -96,7 +85,6 @@ class PolygonGeometry {
         geometryPosition.push(positionArrTranslate[0]);
       }
     });
-    console.log(geometryPosition);
     geometry.setFromPoints(geometryPosition);
     this.geometry = geometry;
   }

@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2023-01-10 18:05:40
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-26 12:48:10
+ * @LastEditTime: 2023-03-26 14:16:22
  */
 
 import * as Webgis from '../build/bundle.module.js';
@@ -183,7 +183,7 @@ const billboardMaterial = new Webgis.BillboardMaterial();
 // 贴图
 billboardMaterial.image = 'http://192.168.0.100:8810/1.png';
 billboardMaterial.text = '雷达1号';
-viewer.scene.primitives.append(
+/* viewer.scene.primitives.append(
   new Webgis.Primitive({
     geometryInstances: new Webgis.GeometryInstance({
       geometry: billboardGeometry,
@@ -194,7 +194,7 @@ viewer.scene.primitives.append(
     }),
     id: 'billboard',
   }),
-);
+); */
 
 /* 文字 */
 const labelGeometry = new Webgis.LabelGeometry();
@@ -204,7 +204,7 @@ const labelMaterial = new Webgis.LabelMaterial();
 // 文字内容
 labelMaterial.text = 'Label文字';
 // 粗细 大小 字体
-labelMaterial.fontSize = 200;
+labelMaterial.fontSize = 16;
 // 颜色
 labelMaterial.fillColor = new Webgis.Color(109, 139, 241, 1);
 // 添加边框
@@ -220,8 +220,7 @@ viewer.scene.primitives.append(
       // 平移
       translate: new Webgis.Vector3(0, 0, -6),
       // 缩放 注意：缩放要和文字大小配合使用，如果放大很大，而文字大小很小会出现文字模糊现象
-      scale: new Webgis.Vector3(5, 5, 5),
-      /* 文字不支持旋转 */
+      scale: new Webgis.Vector3(1, 1, 1),
     }),
     appearance: new Webgis.MaterialAppearance({
       material: labelMaterial,
