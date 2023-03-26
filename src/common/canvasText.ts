@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2023-02-10 16:46:01
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-23 13:44:03
+ * @LastEditTime: 2023-03-23 14:55:43
  */
 
 import {
@@ -112,11 +112,12 @@ export const createCanvas = (param: CreateCanvasTextParam) => {
   const fontScale = param.fontScale === undefined ? 1 : param.fontScale;
   const canvas = document.createElement('canvas');
   const text = param.text === undefined ? 'canvas文字' : param.text;
-  const fontSize =
-    param.fontSize === undefined ? 16 * fontScale : param.fontSize * fontScale;
+  const fontSizeTransition =
+    param.fontSize === undefined ? 20 * fontScale : param.fontSize * fontScale;
+  const fontSize = fontSizeTransition > 10 ? fontSizeTransition : 10;
   const fillColor =
     param.fillColor === undefined
-      ? new Color(191, 191, 191, 1)
+      ? new Color(217, 217, 217, 1)
       : param.fillColor;
   const outlineColor =
     param.outlineColor === undefined

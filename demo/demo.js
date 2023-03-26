@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2023-01-10 18:05:40
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-23 13:40:40
+ * @LastEditTime: 2023-03-26 12:48:10
  */
 
 import * as Webgis from '../build/bundle.module.js';
@@ -59,10 +59,10 @@ modelMaterial.url = './assets/shouan3-2-1png(1).glb';
 
 /* 添加区域  */
 const positionArr = [
-  new Webgis.Vector2(5, 5),
-  new Webgis.Vector2(-5, 5),
-  new Webgis.Vector2(-5, -5),
-  new Webgis.Vector2(5, -5),
+  new Webgis.Vector3(5, 5, 5),
+  new Webgis.Vector3(-5, 5, 5),
+  new Webgis.Vector3(-5, -5, 5),
+  new Webgis.Vector3(5, -5, 5),
 ];
 const polygonGeometry = new Webgis.PolygonGeometry(positionArr);
 // 设置拉伸高度
@@ -93,20 +93,20 @@ const wallPosition = [
 const wallGeometry = new Webgis.WallGeometry(wallPosition);
 wallGeometry.stretch(10);
 const wallMaterial = new Webgis.WallMaterial(new Webgis.Color(60, 158, 78, 1));
-viewer.scene.primitives.append(
-  new Webgis.Primitive({
-    geometryInstances: new Webgis.GeometryInstance({
-      geometry: wallGeometry,
-    }),
-    appearance: new Webgis.MaterialAppearance({
-      material: wallMaterial,
-    }),
-    id: 'wallId',
-  }),
-);
+// viewer.scene.primitives.append(
+//   new Webgis.Primitive({
+//     geometryInstances: new Webgis.GeometryInstance({
+//       geometry: wallGeometry,
+//     }),
+//     appearance: new Webgis.MaterialAppearance({
+//       material: wallMaterial,
+//     }),
+//     id: 'wallId',
+//   }),
+// );
 
 /* 流体墙 */
-const wallPositionFluid = [
+/* const wallPositionFluid = [
   new Webgis.Vector2(5.5, 5.5),
   new Webgis.Vector2(-5.5, 5.5),
   new Webgis.Vector2(-5.5, -5.5),
@@ -128,7 +128,7 @@ viewer.scene.primitives.append(
     }),
     id: 'wallFluidId',
   }),
-);
+); */
 
 /* 添加线 */
 const polylineGeometry = new Webgis.PolylineGeometry();

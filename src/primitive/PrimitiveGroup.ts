@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2023-01-05 18:21:33
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-23 13:31:49
+ * @LastEditTime: 2023-03-26 08:28:50
  */
 import { Object3D, Mesh, Points, Sprite } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
@@ -183,6 +183,8 @@ class PrimitiveGroup extends Object3D {
     } else {
       /* mesh */
       material.material.visible = show;
+      console.log(geometry.geometry);
+      console.log(material.material);
       const mesh = new Mesh(geometry.geometry, material.material);
       mesh.visible = show;
       mesh.scale.set(scale.x, scale.y, scale.z);

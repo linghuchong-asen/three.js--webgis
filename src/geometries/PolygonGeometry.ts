@@ -3,46 +3,102 @@
  * @Author: yangsen
  * @Date: 2023-01-29 21:10:03
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-06 21:14:51
+ * @LastEditTime: 2023-03-26 11:26:58
  */
-import { Shape, ShapeGeometry, ExtrudeBufferGeometry, Path, Vector2 } from 'three';
+import {
+  Shape,
+  ShapeGeometry,
+  ExtrudeBufferGeometry,
+  Path,
+  Vector2,
+  BufferGeometry,
+  Vector3,
+} from 'three';
 
-/* TODO:1.平面的多边形；2.使用拉伸方法实现拉伸；3.使用高度属性设置高度; 4.使用孔洞方法实现挖洞；5.是否带有边框线 */
 class PolygonGeometry {
-  positionArr: Vector2[];
-  geometry: ShapeGeometry;
+  positionArr: Vector3[];
   height: number;
   outline: any;
   wall: any;
 
-  constructor(positionArr: Vector2[]) {
+  constructor(positionArr: Vector3[]) {
     this.positionArr = positionArr;
-    this.createShape();
-    this.geometry = this.createGeometry();
+    // this.createShape();/*  */
     this.height = 0;
   }
   type = 'polygonGeometry';
   private shape = new Shape();
+  geometry = new BufferGeometry();
 
-  private createShape() {
+  private createGeometry() {
+    const geometry = new BufferGeometry();
+    const geometryPosition: Vector3[] = [];
     this.positionArr.forEach((item, index) => {
-      if (index === 0) {
-        this.shape.moveTo(item.x, item.y);
-      } else {
-        this.shape.lineTo(item.x, item.y);
+      if (index < this.positionArr.length - 2) {
+        geometryPosition.push(this.positionArr[0]);
+        geometryPosition.push(this.positionArr[index + 1]);
+        geometryPosition.push(this.positionArr[index + 2]);
       }
     });
-    this.shape.lineTo(this.positionArr[0].x, this.positionArr[0].y);
-  }
-  private createGeometry() {
-    const geometry = new ShapeGeometry(this.shape);
-    return geometry;
-  }
-  // 设置高度
-  stretch(height: number) {
-    const geometry = new ExtrudeBufferGeometry(this.shape, { depth: height });
+    geometry.setFromPoints(geometryPosition);
+
     this.geometry = geometry;
-    this.height = height;
+  }
+  // 设置厚度
+  stretch(thickness: number) {
+    console.log(this.positionArr);
+    const positionArrTranslate: Vector3[] = []; // 路径点沿法线平移指定路径后的点(顶面路径点)
+    const vector1 = new Vector3(0, 0, 0);
+    const vector2 = new Vector3(0, 0, 0);
+    vector1.subVectors(this.positionArr[1], this.positionArr[0]);
+    vector2.subVectors(this.positionArr[2], this.positionArr[0]);
+    console.log(vector1, vector2);
+    const normal = new Vector3(); // 法线
+    normal.crossVectors(vector1, vector2).normalize().multiplyScalar(thickness);
+    console.log('normal:', normal);
+    this.positionArr.forEach((item) => {
+      positionArrTranslate.push(new Vector3().copy(item).add(normal));
+    });
+
+    const geometry = new BufferGeometry();
+    const geometryPosition: Vector3[] = [];
+    // 底面
+    this.positionArr.forEach((item, index) => {
+      if (index < this.positionArr.length - 2) {
+        geometryPosition.push(this.positionArr[0]);
+        geometryPosition.push(this.positionArr[index + 1]);
+        geometryPosition.push(this.positionArr[index + 2]);
+      }
+    });
+    // 顶面
+    positionArrTranslate.forEach((item, index) => {
+      if (index < this.positionArr.length - 2) {
+        geometryPosition.push(positionArrTranslate[0]);
+        geometryPosition.push(positionArrTranslate[index + 1]);
+        geometryPosition.push(positionArrTranslate[index + 2]);
+      }
+    });
+    // 四周面
+    this.positionArr.forEach((item, index) => {
+      if (index !== this.positionArr.length - 1) {
+        geometryPosition.push(this.positionArr[index]);
+        geometryPosition.push(positionArrTranslate[index + 1]);
+        geometryPosition.push(positionArrTranslate[index]);
+        geometryPosition.push(this.positionArr[index]);
+        geometryPosition.push(this.positionArr[index + 1]);
+        geometryPosition.push(positionArrTranslate[index + 1]);
+      } else {
+        geometryPosition.push(this.positionArr[index]);
+        geometryPosition.push(positionArrTranslate[0]);
+        geometryPosition.push(positionArrTranslate[index]);
+        geometryPosition.push(this.positionArr[index]);
+        geometryPosition.push(this.positionArr[0]);
+        geometryPosition.push(positionArrTranslate[0]);
+      }
+    });
+    console.log(geometryPosition);
+    geometry.setFromPoints(geometryPosition);
+    this.geometry = geometry;
   }
   // 设置孔洞
   setHole(positionArr: Vector2[]) {

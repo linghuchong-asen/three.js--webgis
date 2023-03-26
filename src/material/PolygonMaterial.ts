@@ -3,31 +3,13 @@
  * @Author: yangsen
  * @Date: 2023-02-06 06:47:02
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-06 18:13:46
+ * @LastEditTime: 2023-03-26 13:14:14
  */
 import { ShaderMaterial, DoubleSide, MeshBasicMaterial } from 'three';
 import { translateColor } from '@/utils/utilFunction';
 import { Color } from '@/math/Color';
-
-/* let heightState: number;
-interface Obj {
-  height: undefined | number;
-}
-const obj: Obj = {
-  height: undefined,
-};
-const handler = {
-  get: function (target: any, key: string, receiver: any) {
-    return Reflect.get(target, key, receiver);
-  },
-  set: function (target: any, key: string, value: any, receiver: any) {
-    if (key === 'height') {
-      heightState = value;
-    }
-    return true;
-  },
-};
-const objProxy = new Proxy(obj, handler); */
+import { PolylineMaterial } from './PolylineMaterial';
+import { LabelMaterial } from './LabelMaterial';
 
 class PolygonMaterial {
   material: any;
@@ -94,12 +76,16 @@ class PolygonMaterial {
   }
   /* 创建普通材质 */
   private createMaterial(color: Color) {
-    const material = new MeshBasicMaterial({ color: translateColor(color), transparent: true });
+    const material = new MeshBasicMaterial({
+      color: translateColor(color),
+      transparent: true,
+      side: DoubleSide,
+    });
     if (color.alpha !== 1) material.opacity = color.alpha;
     return material;
   }
+  outlineMaterial = new PolylineMaterial();
+  textMaterial = new LabelMaterial();
 }
-/* export const heightCB = (height: number): void => {
-  objProxy.height = height;
-}; */
+
 export { PolygonMaterial };
