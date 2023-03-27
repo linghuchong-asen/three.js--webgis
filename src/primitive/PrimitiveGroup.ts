@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2023-01-05 18:21:33
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-27 10:35:00
+ * @LastEditTime: 2023-03-27 11:19:54
  */
 import { Object3D, Mesh, Points, Sprite, Vector3, Box3 } from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
@@ -257,12 +257,11 @@ class PrimitiveGroup extends Object3D {
       box3.setFromPoints(positionTop);
       const textPosition = new Vector3();
       box3.getCenter(textPosition);
-      const text = new Sprite(material.material);
+      const text = new Sprite(material.textMaterial.material);
       text.visible = false;
       // @ts-ignore
       text.select = select;
-      console.log(textPosition);
-      text.position.set(textPosition.x, textPosition.y, textPosition.z);
+      text.position.set(textPosition.x, textPosition.y, textPosition.z - 1);
       text.scale.set(scale.x, scale.y, scale.z);
       text.translateX(translate.x);
       text.translateY(translate.y);

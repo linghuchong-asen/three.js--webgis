@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2023-02-13 10:01:07
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-26 13:39:49
+ * @LastEditTime: 2023-03-27 10:44:20
  */
 /* 文字内容，字体，大小,文字粗细，颜色；边框；，显示隐藏  |缩放，偏移量(用平移实现),位置，旋转 */
 import { createCanvasText } from '@/common/canvasText';
@@ -49,6 +49,19 @@ class LabelMaterial {
   }
   set text(value: string | undefined) {
     this._text = value;
+    this.material = new SpriteMaterial({
+      map: createCanvasText({
+        text: this._text,
+        fontSize: this._fontSize,
+        isFill: this._isFill,
+        isOutline: this._isOutline,
+        fillColor: this._fillColor,
+        outlineWidth: this._outlineWidth,
+        outlineColor: this._outlineColor,
+      }),
+
+      alphaTest: 1,
+    });
   }
   // 文字大小
   get fontSize() {
@@ -56,6 +69,19 @@ class LabelMaterial {
   }
   set fontSize(value: number | undefined) {
     this._fontSize = value;
+    this.material = new SpriteMaterial({
+      map: createCanvasText({
+        text: this._text,
+        fontSize: this._fontSize,
+        isFill: this._isFill,
+        isOutline: this._isOutline,
+        fillColor: this._fillColor,
+        outlineWidth: this._outlineWidth,
+        outlineColor: this._outlineColor,
+      }),
+
+      alphaTest: 1,
+    });
   }
   // 文字颜色
   get fillColor() {
@@ -63,6 +89,19 @@ class LabelMaterial {
   }
   set fillColor(value: Color | undefined) {
     this._fillColor = value;
+    this.material = new SpriteMaterial({
+      map: createCanvasText({
+        text: this._text,
+        fontSize: this._fontSize,
+        isFill: this._isFill,
+        isOutline: this._isOutline,
+        fillColor: this._fillColor,
+        outlineWidth: this._outlineWidth,
+        outlineColor: this._outlineColor,
+      }),
+
+      alphaTest: 1,
+    });
   }
   // 边框颜色
   get outlineColor() {
@@ -70,6 +109,19 @@ class LabelMaterial {
   }
   set outlineColor(value: Color | undefined) {
     this._outlineColor = value;
+    this.material = new SpriteMaterial({
+      map: createCanvasText({
+        text: this._text,
+        fontSize: this._fontSize,
+        isFill: this._isFill,
+        isOutline: this._isOutline,
+        fillColor: this._fillColor,
+        outlineWidth: this._outlineWidth,
+        outlineColor: this._outlineColor,
+      }),
+
+      alphaTest: 1,
+    });
   }
   // 文字是否填充
   get isFill() {
@@ -77,6 +129,19 @@ class LabelMaterial {
   }
   set isFill(value: boolean | undefined) {
     this._isFill = value;
+    this.material = new SpriteMaterial({
+      map: createCanvasText({
+        text: this._text,
+        fontSize: this._fontSize,
+        isFill: this._isFill,
+        isOutline: this._isOutline,
+        fillColor: this._fillColor,
+        outlineColor: this._outlineColor,
+        outlineWidth: this._outlineWidth,
+      }),
+
+      alphaTest: 1,
+    });
   }
   // 文字是否有边框
   get isOutline() {
@@ -84,6 +149,19 @@ class LabelMaterial {
   }
   set isOutline(value: boolean | undefined) {
     this._isOutline = value;
+    this.material = new SpriteMaterial({
+      map: createCanvasText({
+        text: this._text,
+        fontSize: this._fontSize,
+        isFill: this._isFill,
+        isOutline: this._isOutline,
+        fillColor: this._fillColor,
+        outlineColor: this._outlineColor,
+        outlineWidth: this._outlineWidth,
+      }),
+
+      alphaTest: 1,
+    });
   }
   // 文字边框宽度
   get outlineWidth() {
@@ -91,6 +169,19 @@ class LabelMaterial {
   }
   set outlineWidth(value: number | undefined) {
     this._outlineWidth = value;
+    this.material = new SpriteMaterial({
+      map: createCanvasText({
+        text: this._text,
+        fontSize: this._fontSize,
+        isFill: this._isFill,
+        isOutline: this._isOutline,
+        fillColor: this._fillColor,
+        outlineColor: this._outlineColor,
+        outlineWidth: this._outlineWidth,
+      }),
+
+      alphaTest: 1,
+    });
   }
 }
 export { LabelMaterial };
