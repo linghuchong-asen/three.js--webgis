@@ -3,9 +3,9 @@
  * @Author: yangsen
  * @Date: 2023-02-06 06:47:02
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-26 13:14:14
+ * @LastEditTime: 2023-03-28 08:24:46
  */
-import { ShaderMaterial, DoubleSide, MeshBasicMaterial } from 'three';
+import { ShaderMaterial, DoubleSide, MeshBasicMaterial, Plane } from 'three';
 import { translateColor } from '@/utils/utilFunction';
 import { Color } from '@/math/Color';
 import { PolylineMaterial } from './PolylineMaterial';
@@ -13,18 +13,20 @@ import { LabelMaterial } from './LabelMaterial';
 
 class PolygonMaterial {
   material: any;
-  constructor(color: Color, height: number = 0) {
-    if (height === 0) {
+  constructor(color: Color, thickness: number = 0) {
+    if (thickness === 0) {
       this.material = this.createMaterial(color);
     } else {
-      this.material = this.createOpacityHeightMat(color, height);
+      this.material = this.createOpacityHeightMat(color, thickness);
     }
   }
+  // 底面
+  bottomPlane = new Plane();
 
   /* 创建具有高度透明度渐变材质 */
   private createOpacityHeightMat(
     color: Color,
-    height: number,
+    thickness: number,
     option = {
       opacity: color.alpha === 1 ? 0.5 : color.alpha,
     },
@@ -33,29 +35,25 @@ class PolygonMaterial {
     /* position uv应该是three.js内部做的工作,也就是顶点位置，纹理坐标不需要使用者再去计算和定义了,three.js已经定义好了,可以直接拿来用
   包括projectionMatrix viewMatrix modelMatrix三个矩阵也是three.js内部帮忙做的工作,直接拿来用就行 */
     const vertexShader = /* glsl */ `
-       uniform vec3 u_color;
-       uniform float u_height;
-       varying float v_opacity;
+       varying vec3 vPosition;
        void main() {
-           vec3 vPosition = position; //position是一个vec3，没有w分量
-           v_opacity = mix(0.0, 1.0, position.z / u_height * 1.0) ;
-           gl_Position = projectionMatrix * modelViewMatrix * vec4(vPosition, 1);
+           vPosition = position;
+           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1);
        }
     `;
     // 片元着色器
     const fragmentShader = /* glsl */ `
        uniform vec3 u_color;
        uniform float u_opacity;
-       varying float v_opacity;
        void main() {
-           gl_FragColor = vec4(u_color, v_opacity * u_opacity);
+           gl_FragColor = vec4(u_color, u_opacity);
        }
      `;
 
     const material = new ShaderMaterial({
       uniforms: {
         u_height: {
-          value: height,
+          value: thickness,
         },
         u_opacity: {
           value: option.opacity,

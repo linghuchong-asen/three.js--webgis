@@ -3,11 +3,12 @@
  * @Author: yangsen
  * @Date: 2023-02-06 08:46:31
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-02 20:45:12
+ * @LastEditTime: 2023-03-29 10:04:59
  */
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { RGBTranslateHex } from '@/utils/utilFunction';
 import { Color } from '@/math/Color';
+import { globalContainer } from '@/core/Viewer';
 
 class PolylineMaterial {
   material: any;
@@ -21,10 +22,21 @@ class PolylineMaterial {
     this._color = new Color(172, 45, 66);
     this._lineWidth = 1;
     this.material = new LineMaterial({
-      color: parseInt(RGBTranslateHex([this._color.r * 255, this._color.g * 255, this._color.b * 255]), 16),
+      color: parseInt(
+        RGBTranslateHex([
+          this._color.r * 255,
+          this._color.g * 255,
+          this._color.b * 255,
+        ]),
+        16,
+      ),
       linewidth: this._lineWidth,
     });
-    this.material.resolution.set(window.innerWidth, window.innerHeight);
+    if (globalContainer !== null)
+      this.material.resolution.set(
+        globalContainer.clientWidth,
+        globalContainer.clientHeight,
+      );
   }
   // 线宽
   /* setter监听class内某个属性的变化，执行某个操作 */
@@ -37,7 +49,13 @@ class PolylineMaterial {
   }
   // 颜色
   set color(value: Color) {
-    this.material.color = parseInt(RGBTranslateHex([value.r * 255, value.g * 255, value.b * 255]), 16);
+    this.material.color.set(
+      parseInt(
+        RGBTranslateHex([value.r * 255, value.g * 255, value.b * 255]),
+        16,
+      ),
+    );
+
     this._color = value;
   }
   get color() {

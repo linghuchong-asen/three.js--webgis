@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2023-02-13 10:01:07
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-27 10:44:20
+ * @LastEditTime: 2023-03-29 11:37:52
  */
 /* 文字内容，字体，大小,文字粗细，颜色；边框；，显示隐藏  |缩放，偏移量(用平移实现),位置，旋转 */
 import { createCanvasText } from '@/common/canvasText';

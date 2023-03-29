@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2023-01-29 21:10:03
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-26 14:29:46
+ * @LastEditTime: 2023-03-28 08:57:56
  */
 import { Shape, Path, Vector2, BufferGeometry, Vector3 } from 'three';
 
@@ -87,6 +87,7 @@ class PolygonGeometry {
       }
     });
     geometry.setFromPoints(geometryPosition);
+    console.log(geometry);
     this.geometry = geometry;
   }
   // 设置孔洞

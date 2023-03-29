@@ -32,13 +32,30 @@ export const getPngUrl = (url: string) => {
 };
 
 /* 16进制对照表 */
-export const hexArr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+export const hexArr = [
+  '0',
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+];
 /* RGB转16进制颜色 */
 export const RGBTranslateHex = (param: [number, number, number]): string => {
   let hexStr = '0x';
   param.forEach((item, index) => {
-    const quotient = hexArr[Math.floor(param[index] / 16)];
-    const remainder = param[index] % 16;
+    const quotient = hexArr[Math.floor(item / 16)];
+    const remainder = hexArr[item % 16];
     hexStr += quotient + remainder;
   });
   return hexStr;
@@ -57,6 +74,8 @@ export const arrMaxNum = (arr: Array<any>) => {
 
 /* rgba转换为three.js的color需要的rgb */
 export const translateColor = (color: Color) => {
-  const threeColor = new ThreeColor(`rgb(${color.r * 255},${color.g * 255},${color.b * 255})`);
+  const threeColor = new ThreeColor(
+    `rgb(${color.rValue},${color.gValue},${color.bValue})`,
+  );
   return threeColor;
 };

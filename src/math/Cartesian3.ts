@@ -84,6 +84,7 @@ class Cartesian3 {
 
     let latitudeTransition!: number;
     let longitudeTransition!: number;
+    // @ts-ignore
     let heightTransition: number;
     /**
      * @description: 传入上面计算出来的直角坐标系下的X Y Z;目的是计算出三个经纬度高度的中间值，为computeCoordinateFrame函数做准备

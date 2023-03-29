@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2023-02-13 09:59:13
  * @LastEditors: yangsen
- * @LastEditTime: 2023-02-15 10:14:36
+ * @LastEditTime: 2023-03-29 11:39:05
  */
 import { Vector3 } from 'three';
 class LabelGeometry {

@@ -3,9 +3,19 @@
  * @Author: yangsen
  * @Date: 2023-01-05 18:21:33
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-27 11:19:54
+ * @LastEditTime: 2023-03-29 11:48:19
  */
-import { Object3D, Mesh, Points, Sprite, Vector3, Box3 } from 'three';
+import {
+  Object3D,
+  Mesh,
+  Points,
+  Sprite,
+  Vector3,
+  Box3,
+  SpriteMaterial,
+  SphereGeometry,
+  MeshBasicMaterial,
+} from 'three';
 import { Line2 } from 'three/examples/jsm/lines/Line2';
 import { GLTFLoader } from '../loader/GLTFLoader';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
@@ -124,6 +134,7 @@ class PrimitiveGroup extends Object3D {
       // @ts-ignore
       label.select = select;
       const position = geometry.position;
+      console.log(position);
       label.position.set(position.x, position.y, position.z);
       label.scale.set(scale.x, scale.y, scale.z);
       label.translateX(translate.x);
@@ -148,17 +159,28 @@ class PrimitiveGroup extends Object3D {
       children.push(label);
     } else if (geometry.type === 'billboardGeometry') {
       /* 广告牌 */
+      const position = geometry.position;
       material.material.visible = show;
       const billboard = new Sprite(material.material); // 广告牌图片部分
       billboard.visible = false;
       billboard.name = obj.id;
+      // 透明球,用于点选更易选中
+      const sphereGeometry = new SphereGeometry(10, 32, 16);
+      const sphereMaterial = new MeshBasicMaterial({
+        color: 0xffff00,
+        // transparent: true,
+        // opacity: 0,
+      });
+      const sphere = new Mesh(sphereGeometry, sphereMaterial);
+      sphere.position.set(position.x, position.y, position.z);
+      sphere.name = obj.id;
       // @ts-ignore
       billboard.select = select;
       const billboardText = new Sprite(material.textMaterial.material); // 广告牌文字部分
       billboardText.visible = show;
       // @ts-ignore
       billboardText.select = select;
-      const position = geometry.position;
+
       billboard.position.set(position.x, position.y, position.z);
       billboard.scale.set(scale.x, scale.y, scale.z);
       billboard.translateX(translate.x);
@@ -196,6 +218,7 @@ class PrimitiveGroup extends Object3D {
       billboardLabel.position.set(0, 0, 0);
       billboard.add(billboardLabel);
       children.push(billboard);
+      children.push(sphere);
     } else if (geometry.type === 'polygonGeometry') {
       /* 多边形区域 */
       material.material.visible = show;
@@ -286,6 +309,29 @@ class PrimitiveGroup extends Object3D {
       text2D.position.set(0, 0, 0);
       text.add(text2D);
       children.push(text);
+    } else if (geometry.type === 'twoDGeometry') {
+      /* 2D元素 */
+      const sprite = new Sprite(new SpriteMaterial());
+      sprite.visible = false;
+      sprite.name = obj.id;
+      // @ts-ignore
+      sprite.select = select;
+      const position = geometry.position;
+      sprite.position.set(position.x, position.y, position.z);
+      sprite.scale.set(scale.x, scale.y, scale.z);
+      sprite.translateX(translate.x);
+      sprite.translateY(translate.y);
+      sprite.translateZ(translate.z);
+      const htmlDom = material.material;
+      if (show == false) {
+        htmlDom.display = 'none';
+      } else {
+        htmlDom.display = 'block';
+      }
+      const html2D = new CSS2DObject(htmlDom);
+      html2D.position.set(0, 0, 0);
+      sprite.add(html2D);
+      children.push(sprite);
     } else {
       /* mesh */
       material.material.visible = show;

@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2022-12-19 10:38:45
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-23 13:31:22
+ * @LastEditTime: 2023-03-29 09:51:30
  */
 
 import { Scene } from './Scene';
@@ -59,12 +59,14 @@ const controls = new OrbitControls(scene.camera, labelRenderer.domElement);
 controls.addEventListener('change', () => {
   composer.render();
 });
+export let globalContainer: HTMLElement | null;
 
 class Viewer {
   container: HTMLElement | null;
 
   constructor(id: string) {
     this.container = document.getElementById(id);
+    globalContainer = document.getElementById(id);
     this.initScene();
     this.setSkyBox(); // 设置天空盒
     // 初始向scene中添加图元组
@@ -191,11 +193,14 @@ class Viewer {
     windowPosition.y = -(position.y / window.innerHeight) * 2 + 1;
     const raycaster = new Raycaster();
     raycaster.setFromCamera(windowPosition, this.scene.camera);
+    console.log(scene);
     const objArr = raycaster
       .intersectObject(this.scene)
       .map((item) => item.object);
+    console.log(objArr);
     // @ts-ignore
     const allowSelect = objArr.filter((item) => item.select === true);
+    console.log(allowSelect);
     const primitives = allowSelect.map((item) => {
       const primitive = primitiveArr.find(
         (value: any) => value.id === item.name,

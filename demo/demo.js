@@ -3,7 +3,7 @@
  * @Author: yangsen
  * @Date: 2023-01-10 18:05:40
  * @LastEditors: yangsen
- * @LastEditTime: 2023-03-26 14:16:22
+ * @LastEditTime: 2023-03-29 13:50:40
  */
 
 import * as Webgis from '../build/bundle.module.js';
@@ -70,7 +70,10 @@ polygonGeometry.stretch(50);
 const polygonMaterial = new Webgis.PolygonMaterial(
   new Webgis.Color(117, 16, 99, 0.5),
   50,
+  0
 );
+// polygonMaterial.outlineMaterial.color = new Webgis.Color(0, 255, 0, 0.3);
+console.log(polygonMaterial.outlineMaterial)
 viewer.scene.primitives.append(
   new Webgis.Primitive({
     geometryInstances: new Webgis.GeometryInstance({
@@ -93,17 +96,17 @@ const wallPosition = [
 const wallGeometry = new Webgis.WallGeometry(wallPosition);
 wallGeometry.stretch(10);
 const wallMaterial = new Webgis.WallMaterial(new Webgis.Color(60, 158, 78, 1));
-// viewer.scene.primitives.append(
-//   new Webgis.Primitive({
-//     geometryInstances: new Webgis.GeometryInstance({
-//       geometry: wallGeometry,
-//     }),
-//     appearance: new Webgis.MaterialAppearance({
-//       material: wallMaterial,
-//     }),
-//     id: 'wallId',
-//   }),
-// );
+viewer.scene.primitives.append(
+  new Webgis.Primitive({
+    geometryInstances: new Webgis.GeometryInstance({
+      geometry: wallGeometry,
+    }),
+    appearance: new Webgis.MaterialAppearance({
+      material: wallMaterial,
+    }),
+    id: 'wallId',
+  }),
+);
 
 /* 流体墙 */
 /* const wallPositionFluid = [
@@ -143,6 +146,7 @@ const polylineMaterial = new Webgis.PolylineMaterial([147, 172, 130]);
 // 设置线宽
 polylineMaterial.lineWidth = 10;
 // 设置颜色
+polylineMaterial.color = new Webgis.Color(120, 145, 255);
 // 设置线类型（实线/虚线）
 viewer.scene.primitives.append(
   new Webgis.Primitive({
@@ -183,7 +187,7 @@ const billboardMaterial = new Webgis.BillboardMaterial();
 // 贴图
 billboardMaterial.image = 'http://192.168.0.100:8810/1.png';
 billboardMaterial.text = '雷达1号';
-/* viewer.scene.primitives.append(
+viewer.scene.primitives.append(
   new Webgis.Primitive({
     geometryInstances: new Webgis.GeometryInstance({
       geometry: billboardGeometry,
@@ -194,12 +198,12 @@ billboardMaterial.text = '雷达1号';
     }),
     id: 'billboard',
   }),
-); */
+);
 
 /* 文字 */
 const labelGeometry = new Webgis.LabelGeometry();
 // 位置
-labelGeometry.position = new Webgis.Vector3(10, 10, 10);
+labelGeometry.position = new Webgis.Vector3(0, 0, 60);
 const labelMaterial = new Webgis.LabelMaterial();
 // 文字内容
 labelMaterial.text = 'Label文字';
@@ -231,6 +235,7 @@ viewer.scene.primitives.append(
   }),
 );
 
+
 /* 根据id获取primitive */
 const labelPrimitive = viewer.scene.getPrimitiveById('labelId');
 const pointPrimitive = viewer.scene.getPrimitiveById('pointId');
@@ -238,6 +243,9 @@ const modelPrimitive = viewer.scene.getPrimitiveById('modelId');
 const billboard = viewer.scene.getPrimitiveById('billboard');
 const polygonPrimitive = viewer.scene.getPrimitiveById('polygonId');
 const wallPrimitive = viewer.scene.getPrimitiveById('wallId');
+console.log(labelPrimitive.geometryInstances.geometry.position.set(0, 0, 0));
+console.log(labelPrimitive);
+pointPrimitive.geometryInstances.position = new Webgis.Vector3(0,0,0)
 
 /* 相机飞行 */
 const button = document.getElementById('cameraFly');
@@ -256,4 +264,15 @@ highLightButton.addEventListener('click', () => {
     viewer.highLight([wallPrimitive]);
     highFlag = true;
   }
+});
+
+/* 点击获取物体 */
+document.addEventListener('click', (e) => {
+  const position = new Webgis.Vector2();
+  position.x = e.clientX;
+  position.y = e.clientY;
+  
+    const primitive = viewer.pick(position);
+    console.log(primitive);
+  
 });
